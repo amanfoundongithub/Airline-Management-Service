@@ -5,3 +5,5 @@ typing
 passlib[bcrypt]
 python-jose[cryptography]
 bcrypt
+motor 
+pymongo
