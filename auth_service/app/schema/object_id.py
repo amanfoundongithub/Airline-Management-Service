@@ -1,18 +1,21 @@
 from bson import ObjectId
 
+from typing import Any, Annotated
+from pydantic import BeforeValidator
+
 
 # --------- PYDANTIC METHOD TO HANDLE OBJECT ID -----------
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate 
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid Object Id")
+def validate_object_id(v: Any) -> ObjectId:
+    """
+    Validates input and converts it to a bson.ObjectId instance.
+    """
+    if isinstance(v, ObjectId):
+        return v
+    if isinstance(v, str) and ObjectId.is_valid(v):
         return ObjectId(v)
-    
-    @classmethod
-    def __modify_schema__(cls, field_schema : dict):
-        field_schema.update(type = "string")
+    raise ValueError("Invalid ObjectId format")
+
+PyObjectId = Annotated[
+    ObjectId, 
+    BeforeValidator(validate_object_id) 
+]

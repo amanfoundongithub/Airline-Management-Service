@@ -7,7 +7,7 @@ from typing          import Optional
 
 class UserService:
 
-    def __init__(self, user_repo : UserRepository):
+    def __init__(self, user_repo : UserRepository = None):
         self.repository = user_repo or get_user_repository()
     
     async def create(self, request : UserCreate) -> Optional[UserResponse]:

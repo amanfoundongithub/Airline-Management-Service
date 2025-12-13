@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
 from db.client import connect_with_mongo, disconnect_with_mongo
 
@@ -30,4 +31,3 @@ def read_root():
         "status" : "Auth Service running",
         "version" : "v1"
     }
-

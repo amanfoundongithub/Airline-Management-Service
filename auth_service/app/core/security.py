@@ -43,7 +43,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_jwt_token(data : Dict[str, Any], expires_delta : Optional[timedelta] = None):
 
-    payload = data.copy()
+    payload = {
+        "sub" : data 
+    }
 
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -67,7 +69,6 @@ def decode_jwt_token(token : str) -> Optional[TokenData]:
             settings.security.jwt_secret_key,
             algorithms = [settings.security.jwt_algorithm]
         )
-
         sub : str = payload.get("sub")
         if sub is None: 
             return None
