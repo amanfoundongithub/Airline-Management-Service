@@ -36,7 +36,7 @@ async def disconnect_with_mongo():
         print(f"[INFO] Closing connection with {settings.mongo.db_name}")
 
 
-async def get_user_collection() -> AsyncIOMotorCollection:
+def get_user_collection() -> AsyncIOMotorCollection:
     if database is None:
         raise ConnectionError(f"[ERROR] Connect to MongoDB before getting collection.")
     return database[settings.mongo.user_collection_name]
