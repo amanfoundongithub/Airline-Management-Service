@@ -5,7 +5,7 @@ from schema.token   import Token
 from service.user   import UserService, get_user_service
 
 from core.exception import UserAlreadyExistsException, UserAuthorizationException
-from core.security  import create_jwt_token
+from core.security  import create_jwt_token, get_current_user
 
 
 router = APIRouter(
@@ -53,3 +53,15 @@ async def login_route(
     except UserAuthorizationException as e:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = str(e))
+    
+
+@router.get(
+    "/me",
+    response_model = UserResponse,
+    status_code = status.HTTP_200_OK,
+    summary = "Test route to get user details"
+)
+async def get_me_route(
+    current_user : UserResponse = Depends(get_current_user)
+):
+    return current_user
