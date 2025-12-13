@@ -1,5 +1,3 @@
-from config.settings import settings
+from core.security import hash_password
 
-
-print(settings.app.DEBUG)
-print("Done") 
+print(hash_password("abcd"))
