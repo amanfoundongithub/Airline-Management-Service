@@ -1,8 +1,10 @@
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
-from typing import *
+from motor.motor_asyncio import AsyncIOMotorCollection
+from typing import Optional
 
 from db.client import get_user_collection
-from schema.user import *
+
+from schema.user import UserInDB
+from schema.object_id import PyObjectId
 
 
 class UserRepository:
@@ -17,10 +19,7 @@ class UserRepository:
 
         return user 
 
-    async def find(self, 
-                   email : str = None,
-                   id: PyObjectId = None) -> Optional[UserInDB]:
-        
+    async def find(self, email : str = None,id: PyObjectId = None) -> Optional[UserInDB]:
         query = {}
         if email:
             query["email"] = email 
