@@ -1,13 +1,11 @@
-from core.security import create_jwt_token, decode_jwt_token
-
-data = {
-    "name" : "jk",
-    "age" : "23"
-}
+from fastapi import FastAPI
+from db.client import connect_with_mongo, disconnect_with_mongo
 
 
-tok = create_jwt_token(data)
-dat = decode_jwt_token(tok)
+# App
+app = FastAPI()
 
-print(tok)
-print(dat) 
+# Hooks
+app.add_event_handler("startup", connect_with_mongo)
+app.add_event_handler("shutdown", disconnect_with_mongo)
+
