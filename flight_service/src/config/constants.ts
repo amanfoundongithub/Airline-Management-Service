@@ -1,38 +1,29 @@
 
 
 /**
- * Custom type to define the flight status 
+ * Defines the status of the flight
+ * 
+ * @author amanfoundongithub
  */
-export type FlightStatus =
-    | 'Scheduled'
-    | 'Delayed'
-    | 'Departed'
-    | 'Arrived'
-    | 'Cancelled'
-    | 'Boarding'
-
+export enum FlightStatus {
+    SCHEDULED = 'Scheduled',
+    DELAYED   = 'Delayed',
+    BOARDING  = 'Boarding',
+    DEPARTED  = 'Departed',
+    ARRIVED   = 'Arrived',
+    CANCELLED = 'Cancelled',
+}
 
 /**
- * Define http codes
+ * Defines the color of the logs, useful for logger
  * 
+ * @author amanfoundongithub
  */
-export const HTTPSTATUS = Object.freeze({
-    // 200 series here
-    OK : 200,
-    CREATED : 201,
-    NO_CONTENT : 204,
-
-    // 400 series here
-    BAD_REQUEST : 400,
-    UNAUTHORIZED : 401,
-    FORBIDDEN : 403,
-    NOT_FOUND : 404,
-    CONFLICT : 409,
-
-    // 500 series here
-    INTERNAL_SERVER_ERROR : 500,
-    BAD_GATEWAY : 502,
-    SERVICE_UNAVAILABLE : 503
-
-})
-
+export enum Colors {
+    RED    = "\x1b[31m",
+    GREEN  = "\x1b[32m",
+    YELLOW = "\x1b[33m",
+    BLUE   = "\x1b[34m",
+    CYAN   = "\x1b[36m",
+    RESET  = "\x1b[0m",
+}
