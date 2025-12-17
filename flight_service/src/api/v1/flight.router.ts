@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { FlightController } from "../../controller/flight.controller.js";
 import { validateFlightCreationRequestMiddleware, validateFlightLookupRequestMiddleware } from "../../middleware/flight.middleware.js";
+import { validateAuthenticationTokenMiddleware } from "../../middleware/auth.middleware.js";
 
 
 
@@ -8,8 +9,11 @@ import { validateFlightCreationRequestMiddleware, validateFlightLookupRequestMid
 const router = Router()
 const flightController = new FlightController()
 
+
+
 router.post(
     '/create',
+    validateAuthenticationTokenMiddleware,
     validateFlightCreationRequestMiddleware,
     flightController.create
 )

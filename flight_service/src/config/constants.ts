@@ -16,6 +16,9 @@ export const APP_DESC = "A microservice to deal with flight related configuratio
 export const API_VERSION = "v1"
 export const API_PREFIX  = `/api/${API_VERSION}`
 
+// API of other microservices
+export const AUTH_MICROSERVICE_VERIFICATION_URL = "http://localhost:4500/api/v1/users/me"
+
 // NFR parameters (will be added later)
 
 // Other constants will be added similarly as the project progresses...
