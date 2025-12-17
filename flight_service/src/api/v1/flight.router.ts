@@ -24,4 +24,5 @@ router.get(
     '/search',
     flightController.search
 )
+
 export default router;
