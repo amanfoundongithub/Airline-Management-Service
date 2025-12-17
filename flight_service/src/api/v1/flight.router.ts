@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { FlightController, validateFlightCreationRequestMiddleware } from "../controllers/flight.controller.js";
+import { FlightController } from "../../controller/flight.controller.js";
+import { validateFlightCreationRequestMiddleware } from "../../middleware/flight.middleware.js";
 
 
 
