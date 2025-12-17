@@ -21,30 +21,25 @@ export class FlightController {
         this.flightRepository = new FlightRepository();
     }
 
-
     create = async (req : Request, res : Response) => {
         try {
-            // Log the request
-            console.log("Received request for creating new airline")
+            FLIGHT_CONTROLLER_LOGGER.info("Received request for creating new airline")
 
-            // Now we will create the flight
             const newFlight = await this.flightRepository.create(req.body);
-
             return res.status(201).json({
                 message : "created",
                 details : newFlight
             })
             
         } catch(e) {
-
-            console.log("Error in creating flight:", e);
+            FLIGHT_CONTROLLER_LOGGER.error("Error in creating flight:" + e);
             return res.status(500).json({
                 error : "Internal Server Error",
                 details : e
             })
 
         } finally {
-            console.log("Request completed for creating new airline") 
+            FLIGHT_CONTROLLER_LOGGER.info("Completed request for creating new airline")
         }
     }
 }
