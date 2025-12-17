@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { FlightController } from "../../controller/flight.controller.js";
-import { validateFlightCreationRequestMiddleware } from "../../middleware/flight.middleware.js";
+import { validateFlightCreationRequestMiddleware, validateFlightLookupRequestMiddleware } from "../../middleware/flight.middleware.js";
 
 
 
@@ -12,6 +12,12 @@ router.post(
     '/create',
     validateFlightCreationRequestMiddleware,
     flightController.create
+)
+
+router.get(
+    '/lookup',
+    validateFlightLookupRequestMiddleware,
+    flightController.lookup
 )
 
 export default router;
