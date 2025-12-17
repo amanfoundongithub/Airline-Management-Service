@@ -26,4 +26,6 @@ export enum Colors {
     BLUE   = "\x1b[34m",
     CYAN   = "\x1b[36m",
     RESET  = "\x1b[0m",
+    DIM    = "\x1b[2m",
+    MAGENTA= "\x1b[35m",
 }
