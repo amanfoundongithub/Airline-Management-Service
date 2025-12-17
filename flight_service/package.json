@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --loader ts-node/esm src/server.ts",
-    "dev": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
+    "start": "node --loader ts-node/esm src/app.start.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --esm src/app.start.ts",
     "build": "tsc"
   },
   "keywords": [],
