@@ -22,7 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 async function start() {
     await connectWithMongoDB(); 
     app.listen(settings.PORT, () => {
-        console.log(`🚀 Flight Service listening on http://localhost:${settings.PORT}`);
+        console.log(`Flight Service listening on http://localhost:${settings.PORT}`);
     });
 }
 
