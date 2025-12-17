@@ -1,7 +1,7 @@
 import express, {Application, Request, Response} from 'express';
 import router from './routes/FlightRouter.js';
-import { connectWithMongoDB } from './db/client.js';
 import { settings } from './config/settings.js';
+import { connectWithMongoDB } from './config/mongo.connection.js';
 ;
 
 
