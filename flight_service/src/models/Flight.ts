@@ -1,11 +1,14 @@
-import { Document, model, Schema } from "mongoose";
-import { FlightStatus } from "../config/constants.js";
+import { model, Schema } from "mongoose";
+import { FlightStatus } from "../common/constants.js";
 
-
-
-export interface IFlight extends Document {
+/**
+ * Defines the interface for the Flight object that persist in MongoDB
+ * 
+ * @author amanfoundongithub
+ */
+export interface IFlight {
     flight_number : string,
-    aircraft_id : string,   // Defined for the aircraft
+    aircraft_id : string,   
     
     departure_airport : string,
     arrival_airport : string, 
@@ -21,6 +24,11 @@ export interface IFlight extends Document {
 
 };
 
+/**
+ * Defines the actual MongoDB schema with the constraints
+ * 
+ * @author amanfoundongithub
+ */
 const FlightSchema: Schema = new Schema({
     flight_number: { 
         type: String, 
@@ -48,11 +56,23 @@ const FlightSchema: Schema = new Schema({
         match: [/^[A-Z]{3}$/, 'Arrival airport must be a 3-letter IATA code.'],
         uppercase: true
     },
-    departure_time: { type: Date, required: [true, 'Scheduled departure time is required.'] },
-    arrival_time: { type: Date, required: [true, 'Scheduled arrival time is required.'] },
+    departure_time: { 
+        type: Date, 
+        required: [true, 'Scheduled departure time is required.'] 
+    },
+    arrival_time: { 
+        type: Date, 
+        required: [true, 'Scheduled arrival time is required.'] 
+    },
     
-    actual_departure_time: { type: Date, default: null },
-    actual_arrival_time: { type: Date, default: null },
+    actual_departure_time: { 
+        type: Date, 
+        default: null 
+    },
+    actual_arrival_time: { 
+        type: Date, 
+        default: null 
+    },
 
     capacity: { 
         type: Number, 
@@ -61,18 +81,18 @@ const FlightSchema: Schema = new Schema({
     },
     current_status: { 
         type: String, 
-        enum: ['Scheduled', 'Delayed', 'Departed', 'Arrived', 'Cancelled', 'Boarding'],
-        default: 'Scheduled'
+        enum: Object.values(FlightStatus),
+        default: FlightStatus.SCHEDULED
     },
-}, 
-{ 
-    timestamps: true, 
-    collection: 'flights'
-});
+    }, 
+    { 
+        timestamps: true, 
+        collection: 'flights'
+    });
 
 // Create a compound index for fast searching by route and date.
 FlightSchema.index({ departure_airport: 1, arrival_airport: 1, departure_time: 1 }); 
 
 
-// 5. Create the Mongoose Model
+// Create the Mongoose Model
 export const FlightModel = model<IFlight>('Flight', FlightSchema);
