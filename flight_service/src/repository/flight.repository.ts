@@ -1,6 +1,10 @@
 import { FlightModel, IFlight } from '../models/Flight.js';
 
-
+/**
+ * Repository helper to interact with database directly
+ * 
+ * @author amanfoundongithub
+ */
 export class FlightRepository {
 
     create = async (flightData : Partial<IFlight>) => {
@@ -27,5 +31,3 @@ export class FlightRepository {
     }
 
 }
-
-export const flightRepository = new FlightRepository();
