@@ -1,6 +1,5 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { FlightRepository } from "../repository/flight.repository.js";
-import {findMissingFieldsInCreateRequest, validateArrivalBeforeDeparture} from "../common/flight.validation.js";
 
 import { Logger } from "../common/logger.js";
 
