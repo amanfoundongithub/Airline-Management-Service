@@ -25,6 +25,20 @@ export const validateFlightCreationRequestMiddleware = (req : Request, res : Res
         });
     }
 
-    next() 
+    next();
     
+}
+
+export const validateFlightLookupRequestMiddleware = (req : Request, res : Response, next : NextFunction) => {
+
+    const { flightNumber } = req.query;
+
+    if(!flightNumber) {
+        return res.status(400).json({
+            error : "Invalid request. Missing flightNumber query param"
+        })
+    }
+
+    next();
+
 }
