@@ -1,32 +1,45 @@
-import { settings } from "../config/settings";
-import { Colors } from "./constants";
+import { settings } from "../config/settings.js";
+import { Colors } from "./constants.js";
 
 export class Logger {
+    name: string;
+    debugMode: boolean;
 
-    name : string;
-    debugMode : boolean;
-
-    constructor(name : string) {
+    constructor(name: string) {
         this.name = name;
         this.debugMode = settings.DEBUG_MODE;
     }
 
-    info = (message : string) => {
-        console.log(`${Colors.GREEN}(${this.name})[INFO]\t\t${message}${Colors.RESET}`)
-    } 
-
-    error = (message : string) => {
-        console.log(`${Colors.RED}(${this.name})[ERROR]\t\t${message}${Colors.RESET}`)
+    info = (message: any) => {
+        console.log(`${this.getPrefix('INFO', Colors.GREEN)} ${this.formatMessage(message)}`);
     }
 
-    warn = (message : string) => {
-        console.log(`${Colors.YELLOW}(${this.name})[ERROR]\t\t${message}${Colors.RESET}`)
+    error = (message: any) => {
+        console.log(`${this.getPrefix('ERROR', Colors.RED)} ${this.formatMessage(message)}`);
     }
 
-    debug = (message : string) => {
-        if(this.debugMode) {
-            console.log(`${Colors.CYAN}(${this.name})[DEBUG]\t\t${message}${Colors.RESET}`)
+    warn = (message: any) => {
+        console.log(`${this.getPrefix('WARN', Colors.YELLOW)} ${this.formatMessage(message)}`);
+    }
+
+    debug = (message: any) => {
+        if (this.debugMode) {
+            console.log(`${this.getPrefix('DEBUG', Colors.CYAN)} ${this.formatMessage(message)}`);
         }
+    }
+
+    private getPrefix(level: string, color: string): string {
+        const timestamp = new Date().toISOString().split('T')[1]?.split('Z')[0]; // HH:mm:ss.ms
+        const fixedName = this.name.padEnd(20, ' '); 
+        const fixedLevel = level.padEnd(7, ' ');    
+        
+        return `${Colors.DIM}${timestamp}${Colors.RESET} ${color}${fixedLevel}${Colors.RESET} ${Colors.MAGENTA}[${fixedName}]${Colors.RESET}`;
+    }
+
+    private formatMessage(message: any): string {
+        return typeof message === 'object' 
+            ? `\n${JSON.stringify(message, null, 2)}` 
+            : message;
     }
 
 }
