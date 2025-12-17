@@ -1,4 +1,4 @@
-import { FlightModel, IFlight } from '../models/Flight';
+import { FlightModel, IFlight } from '../models/Flight.js';
 
 
 export class FlightRepository {

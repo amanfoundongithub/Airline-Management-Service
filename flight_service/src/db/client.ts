@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { settings } from "../config/settings";
+import { settings } from "../config/settings.js";
 
 
 const MONGO_URI = settings.mongo.FLIGHT_MONGO_URI;

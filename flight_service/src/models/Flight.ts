@@ -1,5 +1,5 @@
 import { Document, model, Schema } from "mongoose";
-import { FlightStatus } from "../config/constants";
+import { FlightStatus } from "../config/constants.js";
 
 
 

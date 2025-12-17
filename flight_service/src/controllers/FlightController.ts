@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTPSTATUS } from '../config/constants';
-import { flightRepository } from "../repository/FlightRepository";
+import { HTTPSTATUS } from '../config/constants.js';
+import { flightRepository } from "../repository/FlightRepository.js";
 
 
 const validateArrivalBeforeDeparture = (arrival : string, departure : string) => {
     const departureDate = new Date(departure);
     const arrivalDate = new Date(arrival);
-    return departureDate >= arrivalDate;
+    return departureDate <= arrivalDate;
 }
 
 
