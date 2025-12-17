@@ -42,6 +42,54 @@ export const validateAuthenticationTokenMiddleware = async (req : Request, res :
 
 
     }
+}
 
+export const validateAdminAuthorizationMiddleware = async (req : Request, res : Response, next : NextFunction) => {
 
+    try {
+        const userData = (req as any).userData 
+
+        if(userData["role"] === "admin") {
+            next()
+        } else {
+            return res.status(403).json({
+                error : "This operation is reserved for only people with `admin` privileges. Please check with administrator\
+                for more information."
+            })
+        }
+    } catch(e : any) {
+        AUTHORIZATION_LOGGER.error(`Error in receiving authorization response: ${e}`)
+
+        const status = e.response?.status || 500;
+
+        return res.status(status).json({
+            error : "Internal error during authorization. Check again after some time!"
+        })
+
+    }
+}
+
+export const validateStaffAuthorizationMiddleware = async (req : Request, res : Response, next : NextFunction) => {
+
+    try {
+        const userData = (req as any).userData 
+
+        if(userData["role"] === "admin" || userData["role"] === "staff") {
+            next()
+        } else {
+            return res.status(403).json({
+                error : "This operation is reserved for only people with `admin` or `staff` privileges. Please check with administrator\
+                for more information."
+            })
+        }
+    } catch(e : any) {
+        AUTHORIZATION_LOGGER.error(`Error in receiving authorization response: ${e}`)
+
+        const status = e.response?.status || 500;
+
+        return res.status(status).json({
+            error : "Internal error during authorization. Check again after some time!"
+        })
+
+    }
 }
