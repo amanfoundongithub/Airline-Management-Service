@@ -65,10 +65,43 @@ export class FlightController {
         } catch(e) {
             FLIGHT_CONTROLLER_LOGGER.error(`Error in findind details: ${e}`);
             return res.status(500).json({
-                message : e 
+                error : "Internal Server Error",
+                details : e
             })
         } finally {
             FLIGHT_CONTROLLER_LOGGER.info(`Request for Info on Airline #${flightNumber} completed.`)
+        }
+    }
+
+    search = async (req : Request, res : Response) => {
+        try {
+            FLIGHT_CONTROLLER_LOGGER.info(`Request for Search on Airline received.`)
+
+            const filter : any = {};
+            Object.keys(req.query).forEach((key) => {
+                const value = req.query[key]
+
+                if(value) {
+                    filter[key] = {
+                        $regex : value,
+                        $options : "i"
+                    }
+                }
+            })
+
+            const listOfFlights = await this.flightRepository.findAll(filter);
+            return res.status(200).json({
+                "message" : "FOUND",
+                "results" : listOfFlights
+            })
+        } catch(e) {
+            FLIGHT_CONTROLLER_LOGGER.error(`Error in findingflights: ${e}`)
+            return res.status(500).json({
+                error : "Internal Server Error",
+                details : e
+            })
+        } finally {
+            FLIGHT_CONTROLLER_LOGGER.info(`Request for Search on Airline completed.`)
         }
     }
 }

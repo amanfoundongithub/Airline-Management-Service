@@ -20,4 +20,8 @@ router.get(
     flightController.lookup
 )
 
+router.get(
+    '/search',
+    flightController.search
+)
 export default router;
