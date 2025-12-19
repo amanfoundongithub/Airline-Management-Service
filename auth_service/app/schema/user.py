@@ -1,18 +1,23 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 
-from typing import Literal
 from datetime import datetime
-from bson import ObjectId
 
 from schema.object_id import PyObjectId
+from core.constants import UserRole
 
 
 # ------------- BASE CLASS FOR USER --------------
 class UserBase(BaseModel):
-    email : EmailStr
-    name  : str
+    email : EmailStr = Field(..., description = "User's email (must be UNIQUE)")
+    name  : str      = Field(..., min_length = 2, max_length = 100)
+    role  : UserRole = UserRole.PASSENGER
 
-    role  : Literal["customer", "staff", "admin"] = "customer"
+    model_config = ConfigDict(use_enum_values = True)
+
+    @field_validator("email")
+    @classmethod
+    def lowercase_email(cls, v : str) -> str:
+        return v.lower().strip() 
 
 
 # ------------- CLASSES FOR HTTP HANDLERS --------
@@ -23,19 +28,20 @@ class UserLogin(BaseModel):
     email : EmailStr
     password : str
 
+
+
 class UserResponse(UserBase):
 
     id : PyObjectId = Field(alias = "_id", default_factory = PyObjectId)
 
+    is_active:   bool = True
+    is_verified: bool = False
+
     created_at : datetime = Field(default_factory = datetime.now)
     updated_at : datetime = Field(default_factory = datetime.now) 
 
-    class Config:
-        json_encoders = {
-            ObjectId : str 
-        }
-        validate_by_name = True 
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(populate_by_name=True,
+                              arbitrary_types_allowed=True)
 
 
 # --------------- CLASSES FOR MONGODB -------------
