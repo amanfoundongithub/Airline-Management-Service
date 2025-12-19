@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from datetime import datetime
 
-from db.client import connect_with_mongo, disconnect_with_mongo
+from db.client import connect_with_mongo, disconnect_with_mongo, client
 
 import api.v1.user_router as user_router
 
@@ -25,9 +25,11 @@ app.add_event_handler("shutdown", disconnect_with_mongo)
 app.include_router(user_router.router, prefix = "/api/v1")
 
 
+# Check if the server is up and which version is running
 @app.get("/")
 def read_root():
     return {
+        "timestamp" : datetime.now(),
         "status" : "Auth Service running",
         "version" : "v1"
     }
