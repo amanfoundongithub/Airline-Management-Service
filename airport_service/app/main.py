@@ -1,3 +1,3 @@
-from config.details import load_iata_data
+from core.settings import service_settings
 
-load_iata_data() 
+print(service_settings.SERVICE_DESC)
