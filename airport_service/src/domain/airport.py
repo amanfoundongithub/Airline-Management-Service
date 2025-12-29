@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from domain.value_objects import IATACode, ICAOCode
-
+from src.domain.codes import IATACode, ICAOCode
 
 @dataclass
 class Airport:
