@@ -1,0 +1,4 @@
+
+
+class OpenFlightsMappingError(Exception):
+    pass

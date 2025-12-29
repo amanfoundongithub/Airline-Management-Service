@@ -1,4 +1,7 @@
 from helpers.openflight_loader import OpenFlightLoader
+from mappers.openflight_mapper import OpenFlightMapper
+
 
 loader = OpenFlightLoader() 
-print(loader.load_rows())
+mapper = OpenFlightMapper()
+print(mapper.map_rows(loader.load_rows())[-1])
