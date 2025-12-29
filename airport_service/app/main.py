@@ -1,3 +1,4 @@
-from core.settings import service_settings
+from helpers.openflight_loader import OpenFlightLoader
 
-print(service_settings.SERVICE_DESC)
+loader = OpenFlightLoader() 
+print(loader.load_rows())
