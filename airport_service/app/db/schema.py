@@ -1,7 +1,6 @@
 from db.connection import connectToSQLiteDB
 
 def createAirportTable():
-    print("Called") 
     with connectToSQLiteDB() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS airports(
