@@ -4,7 +4,7 @@ from typing import List
 from src.domain.airport import Airport
 
 
-class AirplaneRepository(ABC):
+class AirportRepository(ABC):
 
     @abstractmethod
     def save(self, airports : List[Airport]) -> None:
