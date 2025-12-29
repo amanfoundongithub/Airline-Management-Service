@@ -7,3 +7,4 @@ class ServiceSettings(BasicEnvSettings):
     """
     SERVICE_NAME: str
     SERVICE_DESC: str
+    SERVICE_VERSION: str
