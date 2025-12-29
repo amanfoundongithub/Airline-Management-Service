@@ -10,3 +10,4 @@ build/
 .env
 
 airports.dat
+airports.db
