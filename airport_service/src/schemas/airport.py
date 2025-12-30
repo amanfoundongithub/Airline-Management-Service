@@ -1,3 +1,4 @@
+from typing           import Literal
 from pydantic         import BaseModel
 from src.domain.codes import IATACode, ICAOCode
 
@@ -10,3 +11,7 @@ class AirportResponse(BaseModel):
     icao: ICAOCode | None
 
     timezone: str
+
+class AirportCodeValidation(BaseModel):
+    is_valid : bool
+    code_type : str = Literal["IATA", "ICAO"]
