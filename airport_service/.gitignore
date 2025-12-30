@@ -9,5 +9,8 @@ build/
 
 .env
 
+.venv/
+.idea/
+
 airports.dat
 airports.db
