@@ -1,4 +1,4 @@
-from typing           import Literal
+from typing           import Literal, List
 from pydantic         import BaseModel
 from src.domain.codes import IATACode, ICAOCode
 
@@ -11,6 +11,9 @@ class AirportResponse(BaseModel):
     icao: ICAOCode | None
 
     timezone: str
+
+class AirportSearchResponse(BaseModel):
+    results : List[AirportResponse]
 
 class AirportCodeValidation(BaseModel):
     is_valid : bool
