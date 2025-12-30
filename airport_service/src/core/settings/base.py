@@ -1,4 +1,8 @@
+from dotenv import load_dotenv, find_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Load .env file for base settings
+load_dotenv(find_dotenv())
 
 class BasicEnvSettings(BaseSettings):
     """
