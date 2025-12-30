@@ -53,7 +53,7 @@ class SQLite3AirportRepository(AirportRepository):
                 query += f""" AND country = ? COLLATE NOCASE """
                 params.append(country)
 
-            query += f"""LIMIT ? OFFSET ?"""
+            query += f""" LIMIT ? OFFSET ?"""
             params.extend([limit, offset])
 
             rows = cursor.execute(query, params).fetchall()
