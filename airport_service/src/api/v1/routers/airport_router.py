@@ -6,6 +6,22 @@ from src.schemas.airport                      import AirportResponse, AirportSea
 
 router = APIRouter(prefix = "/airport", tags = ["Airport"])
 
+
+@router.get(
+    "",
+    summary = "Searches for airport using given parameters",
+    description = "This GET request allows any user to find the airport corresponding "
+    " to the provided query"
+)
+async def findByParamsRoute(
+        city : str = None,
+        country : str = None,
+        limit : int = 50,
+        offset : int = 0,
+        service : AirportService = Depends(get_airport_service)
+) -> AirportSearchResponse:
+    return service.find_by_params(city, country, limit, offset)
+
 @router.get(
     "/search",
     summary = "Searches for airports with the given query",

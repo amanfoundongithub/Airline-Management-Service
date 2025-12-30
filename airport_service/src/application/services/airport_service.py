@@ -29,3 +29,16 @@ class AirportService:
             )
         except Exception as e:
             raise e
+
+    def find_by_params(self,
+                       city : str,
+                       country : str,
+                       limit : int = 50,
+                       offset : int = 0) -> AirportSearchResponse:
+        try:
+            airports = self._repository.find_by_params(city, country, limit, offset)
+            return AirportSearchResponse(
+                results = map_airport_list_to_response(airports)
+            )
+        except Exception as e:
+            raise e
