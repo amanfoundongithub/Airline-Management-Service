@@ -1,4 +1,17 @@
-from dotenv import load_dotenv, find_dotenv
 
-# Load the .env file in the overall process
-load_dotenv(find_dotenv())
+# Local imports
+from src.infrastructure.loaders.openflight_loader import OpenFlightLoader
+from src.infrastructure.db.migrate                import run_migrations
+from src.api.dependencies                         import get_airport_repository
+
+
+# Now we will load the data of airport
+loader = OpenFlightLoader()
+airport_list = loader.load()
+
+# Instantiate DB by running migrations
+run_migrations()
+
+# Now ingest this data into SQL
+repository = get_airport_repository()
+repository.save(airport_list)
