@@ -10,37 +10,40 @@ from src.infrastructure.db.repositories import sqlite3_airport_repository
 # -----------------------------
 # Fixture: repo + temp DB
 # -----------------------------
+def create_airports_table(db_path):
+    """Create airports table in the SQLite database."""
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("""
+        CREATE TABLE airports (
+            airport_id INTEGER PRIMARY KEY,
+            name TEXT,
+            city TEXT,
+            country TEXT,
+            iata TEXT,
+            icao TEXT,
+            latitude REAL,
+            longitude REAL,
+            altitude_ft INTEGER,
+            timezone TEXT,
+            active INTEGER
+        );
+        """)
+        conn.commit()
+
+def patched_get_connection(db_path):
+    """Return a SQLite connection with row_factory set to Row."""
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 @pytest.fixture
 def repo(tmp_path):
     db_path = tmp_path / "airports.db"
+    create_airports_table(db_path)
 
-    # Create table
-    conn = sqlite3.connect(db_path)
-    conn.execute("""
-    CREATE TABLE airports (
-        airport_id INTEGER PRIMARY KEY,
-        name TEXT,
-        city TEXT,
-        country TEXT,
-        iata TEXT,
-        icao TEXT,
-        latitude REAL,
-        longitude REAL,
-        altitude_ft INTEGER,
-        timezone TEXT,
-        active INTEGER
-    );
-    """)
-    conn.commit()
-    conn.close()
+    # Patch repository connection
+    sqlite3_airport_repository.get_connection = lambda: patched_get_connection(db_path)
 
-    # Patch get_connection in the module
-    def test_get_connection():
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
-        return conn
-
-    sqlite3_airport_repository.get_connection = test_get_connection
     repository = sqlite3_airport_repository.SQLite3AirportRepository()
     return repository, db_path
 
