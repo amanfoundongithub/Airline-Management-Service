@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 
 from src.api.dependencies                     import get_airport_service
 from src.application.services.airport_service import AirportService
-from src.schemas.airport                      import AirportResponse, AirportSearchResponse
+from src.schemas.airport                      import AirportResponse, AirportSearchResponse, AirportCodeValidation
 
-router = APIRouter(prefix = "/airport", tags = ["Airport"])
+router = APIRouter(prefix = "/airport", tags = ["Airport (Public)"])
 
 
 @router.get(
@@ -35,6 +35,17 @@ async def findByQueryRoute(
         service : AirportService = Depends(get_airport_service)
 ) -> AirportSearchResponse:
     return service.find_by_query(q, limit, offset)
+
+@router.get(
+    "/validate",
+    summary = "Validates the airport code (ICAO/IATA)",
+    description = "This GET request allows any user to validate the airport code"
+)
+async def validateCodeRoute(
+        code : str,
+        service : AirportService = Depends(get_airport_service)
+) -> AirportCodeValidation:
+    return service.validate_code(code)
 
 @router.get(
     "/{code}",

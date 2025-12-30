@@ -1,7 +1,7 @@
-from src.application.mapper.airport_mapper           import map_airport_to_response, map_airport_list_to_response
+from src.application.mapper.airport_mapper           import map_airport_to_response, map_airport_list_to_response, map_airport_to_validation
 from src.application.repositories.airport_repository import AirportRepository
 from src.core.exceptions.http                        import ResourceNotFoundException
-from src.schemas.airport                             import AirportResponse, AirportSearchResponse
+from src.schemas.airport                             import AirportResponse, AirportSearchResponse, AirportCodeValidation
 
 
 class AirportService:
@@ -40,5 +40,14 @@ class AirportService:
             return AirportSearchResponse(
                 results = map_airport_list_to_response(airports)
             )
+        except Exception as e:
+            raise e
+
+    def validate_code(self, code : str) -> AirportCodeValidation:
+        try:
+            airport = self._repository.find_by_code(code)
+            if airport is None:
+                raise ResourceNotFoundException(f"The requested airline with code: {code} is not found.")
+            return map_airport_to_validation(airport, code)
         except Exception as e:
             raise e
