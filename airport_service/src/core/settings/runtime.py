@@ -11,3 +11,6 @@ class RuntimeSettings(BasicEnvSettings):
     SERVICE_ENV: Literal["dev", "stage", "prod"]
 
     DATA_DIRECTORY: str
+
+    DEFAULT_LIMIT_OF_RESULTS: int
+    DEFAULT_OFFSET_OF_RESULTS : int
