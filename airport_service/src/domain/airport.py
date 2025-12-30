@@ -15,3 +15,5 @@ class Airport:
     longitude: float
     altitude_ft: int
     timezone: str
+
+    active : bool = True

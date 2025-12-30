@@ -11,7 +11,7 @@ class SQLite3AirportRepository(AirportRepository):
     def save(self, airports : list[Airport]) -> None:
         with get_connection() as cursor:
             cursor.executemany("""
-                INSERT OR IGNORE INTO airports VALUES(?,?,?,?,?,?,?,?,?,?)
+                INSERT OR IGNORE INTO airports VALUES(?,?,?,?,?,?,?,?,?,?,?)
                            """, [
                                (
                                    a.airport_id,
@@ -23,7 +23,8 @@ class SQLite3AirportRepository(AirportRepository):
                                    a.latitude,
                                    a.longitude,
                                    a.altitude_ft,
-                                   a.timezone
+                                   a.timezone,
+                                   1 if a.active else 0
                                ) for a in airports
                            ])
 

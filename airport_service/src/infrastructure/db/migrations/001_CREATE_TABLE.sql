@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS airports(
     latitude REAL,
     longitude REAL,
     altitude_ft INTEGER,
-    timezone TEXT
+    timezone TEXT,
+    active INTEGER NOT NULL DEFAULT 1
 );

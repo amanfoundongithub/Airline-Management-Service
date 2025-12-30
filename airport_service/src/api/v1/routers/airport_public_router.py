@@ -1,10 +1,15 @@
-from fastapi import APIRouter, Depends
+from fastapi                                  import APIRouter, Depends
 
+# Local imports from the project
 from src.api.dependencies                     import get_airport_service
 from src.application.services.airport_service import AirportService
 from src.schemas.airport                      import AirportResponse, AirportSearchResponse, AirportCodeValidation
 
-router = APIRouter(prefix = "/airport", tags = ["Airport (Public)"])
+# Router for airport (public routes)
+router = APIRouter(prefix = "/airport",
+                   tags = ["Airport (Public)"],
+                   deprecated = False,
+                   include_in_schema = True)
 
 
 @router.get(
@@ -59,4 +64,3 @@ async def findByCodeRoute(
         service : AirportService = Depends(get_airport_service)
 ) -> AirportResponse:
     return service.find_by_code(code)
-
