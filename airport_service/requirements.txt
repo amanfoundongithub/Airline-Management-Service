@@ -1,0 +1,15 @@
+requests
+pydantic
+pydantic[email]
+pydantic-settings
+typing
+passlib[bcrypt]
+python-jose[cryptography]
+bcrypt
+motor 
+pymongo
+fastapi 
+uvicorn
+python-dotenv
+pytest
+pytest-cov
