@@ -11,3 +11,4 @@ pymongo
 fastapi 
 uvicorn
 python-dotenv
+pytest
