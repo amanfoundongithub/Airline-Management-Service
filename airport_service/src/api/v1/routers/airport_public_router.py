@@ -1,12 +1,14 @@
 from fastapi                                  import APIRouter, Depends
-from fastapi.params import Query
-
+from fastapi.params                           import Query
 # Local imports from the project
 from src.api.dependencies                     import get_airport_service
 from src.application.services.airport_service import AirportService
 from src.schemas.airport                      import AirportResponse, AirportSearchResponse, AirportCodeValidation
 from src.core.settings                        import runtime_settings
+from src.core.logging                         import get_logger
 
+# Logger
+LOGGER = get_logger(__name__)
 
 # Default values from .env
 default_limit_of_results = runtime_settings.DEFAULT_LIMIT_OF_RESULTS
@@ -40,6 +42,7 @@ async def find_by_params_route(
         offset  : int = Query(default_offset_of_results, alias = "offset"),
         service : AirportService = Depends(get_airport_service)
 ) -> AirportSearchResponse:
+    LOGGER.info("GET /airports received", extra = {"city": city, "country": country})
     return service.find_by_params(city, country, limit, offset)
 
 
@@ -66,6 +69,7 @@ async def find_by_query_route(
         offset  : int = Query(default_offset_of_results, alias = "offset"),
         service : AirportService = Depends(get_airport_service)
 ) -> AirportSearchResponse:
+    LOGGER.info("GET /airports/search received", extra = {"q": q})
     return service.find_by_query(q, limit, offset)
 
 
@@ -87,6 +91,7 @@ async def validate_code_route(
         code : str = Query(..., alias = "code"),
         service : AirportService = Depends(get_airport_service)
 ) -> AirportCodeValidation:
+    LOGGER.info("GET /airports/validate received", extra = {"code": code})
     return service.validate_code(code)
 
 
@@ -108,4 +113,5 @@ async def find_by_code_route(
         code    : str,
         service : AirportService = Depends(get_airport_service)
 ) -> AirportResponse:
+    LOGGER.info("GET /airports/{code} received", extra = {"code": code})
     return service.find_by_code(code)

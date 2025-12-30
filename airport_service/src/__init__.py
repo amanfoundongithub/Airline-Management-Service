@@ -2,10 +2,6 @@
 from src.infrastructure.loaders.openflight_loader import OpenFlightLoader
 from src.infrastructure.db.migrate                import run_migrations
 from src.api.dependencies                         import get_airport_repository
-from src.core.logging.config                      import setup_logging
-
-# Configure logger before initialization of application
-setup_logging()
 
 # Instantiate DB by running migrations
 run_migrations()
