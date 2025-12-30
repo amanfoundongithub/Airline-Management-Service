@@ -14,3 +14,5 @@ build/
 
 airports.dat
 airports.db
+
+htmlcov/
