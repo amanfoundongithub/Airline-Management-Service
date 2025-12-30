@@ -6,7 +6,7 @@ from src.infrastructure.db.connection import get_connection
 
 class SQLite3AirportRepository(AirportRepository):
 
-    def save_all(self, airports : list[Airport]) -> None:
+    def save(self, airports : list[Airport]) -> None:
         with get_connection() as cursor:
             cursor.executemany("""
                 INSERT OR IGNORE INTO airports VALUES(?,?,?,?,?,?,?,?,?,?)
