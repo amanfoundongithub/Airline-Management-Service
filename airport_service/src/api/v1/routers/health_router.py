@@ -2,7 +2,7 @@ from fastapi  import APIRouter
 from datetime import datetime
 
 # Router
-router = APIRouter()
+router = APIRouter(tags = ["Health"])
 
 # Basic ping
 @router.get("/")
