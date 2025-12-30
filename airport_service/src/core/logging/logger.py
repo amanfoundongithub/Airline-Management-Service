@@ -18,7 +18,7 @@ class Logger:
         self.level = level
 
     def _log(self, level: str, message: str, **kwargs: Any) -> None:
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         color = self.COLORS.get(level, "")
 
         extra = ""
