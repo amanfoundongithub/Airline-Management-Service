@@ -23,3 +23,5 @@ class UserRole(str, Enum):
     # ===== Finance & Compliance =====
     FINANCE = "finance"
     AUDITOR = "auditor"
+
+    SYSTEM = "system"
