@@ -12,12 +12,12 @@ from fastapi.security import OAuth2PasswordBearer
 
 # Settings 
 from typing import Dict, Any, Optional
-from config.settings import settings
+from app.config.settings import settings
 
-from schema.token import TokenData
-from schema.user import UserResponse
-from schema.object_id import PyObjectId
-from repository.user import UserRepository, get_user_repository
+from app.schema.token import TokenData
+from app.schema.user import UserResponse
+from app.schema.object_id import PyObjectId
+from app.repository.user import UserRepository, get_user_repository
 
 
 # ------------------- USER AUTHENTICATION HELPERS -------------------------
@@ -77,7 +77,7 @@ def decode_jwt_token(token : str) -> Optional[TokenData]:
             sub = sub
         )
     
-    except JWTError as e:
+    except JWTError:
         return None
     
 async def get_current_user(
