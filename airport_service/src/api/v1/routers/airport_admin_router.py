@@ -42,6 +42,7 @@ async def get_airport_route(
         user_id: str = Depends(try_admin_login),
         service: AirportService = Depends(get_airport_service)
 ) -> Airport:
+    LOGGER.info(f"GET /airport/{code} received")
     return service.find_by_code(code, mask_details = False)
 
 
@@ -63,6 +64,7 @@ async def create_airport_route(
         user_id: str = Depends(try_admin_login),
         service: AirportService = Depends(get_airport_service)
 ) -> Airport:
+    LOGGER.info(f"POST /airport/{request.code} received")
     return service.create_airport(request)
 
 
@@ -83,6 +85,7 @@ async def delete_airport_route(
         user_id: str = Depends(try_admin_login),
         service: AirportService = Depends(get_airport_service)
 ) -> SuccessMessage:
+    LOGGER.info(f"DELETE /airport/{id} received")
     service.delete_airport(id)
     return SuccessMessage()
 
@@ -102,5 +105,6 @@ async def activate_airport_route(
         user_id: str = Depends(try_admin_login),
         service: AirportService = Depends(get_airport_service)
 ) -> SuccessMessage:
+    LOGGER.info(f"PATCH /airport/{id} received")
     service.activate_airport(id)
     return SuccessMessage()
