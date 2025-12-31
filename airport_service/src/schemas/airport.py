@@ -1,5 +1,5 @@
 from typing           import Literal, List
-from pydantic         import BaseModel
+from pydantic import BaseModel, Field
 from src.domain.codes import IATACode, ICAOCode
 
 class AirportResponse(BaseModel):
@@ -17,7 +17,7 @@ class AirportSearchResponse(BaseModel):
 
 class AirportCodeValidation(BaseModel):
     is_valid : bool
-    code_type : str = Literal["IATA", "ICAO"]
+    code_type : Literal["IATA", "ICAO"] = Field(default = "IATA")
 
 class AirportCreateRequest(BaseModel):
     name: str
