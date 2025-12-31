@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
-from db.client import connect_with_mongo, disconnect_with_mongo, client
+from app.db.client import connect_with_mongo, disconnect_with_mongo, client
 
-import api.v1.user_router as user_router
+import app.api.v1.user_router as user_router
 
 # App
 app = FastAPI(title = "Airline Auth Service")

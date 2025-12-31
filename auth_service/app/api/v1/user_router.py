@@ -1,11 +1,11 @@
 from fastapi        import APIRouter, Depends, HTTPException, status
 
-from schema.user    import UserCreate, UserLogin, UserResponse
-from schema.token   import Token
-from service.user   import UserService, get_user_service
+from app.schema.user    import UserCreate, UserLogin, UserResponse
+from app.schema.token   import Token
+from app.service.user   import UserService, get_user_service
 
-from core.exception import UserAlreadyExistsException, UserAuthorizationException
-from core.security  import create_jwt_token, get_current_user
+from app.core.exception import UserAlreadyExistsException, UserAuthenticationException
+from app.core.security  import create_jwt_token, get_current_user
 
 
 router = APIRouter(
@@ -50,7 +50,7 @@ async def login_route(
             )
         )
     
-    except UserAuthorizationException as e:
+    except UserAuthenticationException as e:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = str(e))
     
