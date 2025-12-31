@@ -32,7 +32,7 @@ class UserRepository:
         result = await self.collection.find_one({"email": email})
         if result is None:
             return
-        if verify_password(old_password, result["hashed_password"]):
+        if verify_password(old_password, result["hashed_password"]) == False:
             return
         result["hashed_password"] = hash_password(new_password)
         await self.collection.find_one_and_update({"email": email}, {"$set": result})
