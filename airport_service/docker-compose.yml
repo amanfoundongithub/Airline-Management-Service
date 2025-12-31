@@ -1,0 +1,11 @@
+services:
+  airport_service:
+    build: .
+    container_name: airport_service
+    ports:
+      - "5300:5300"   # Matches your start_local.sh port
+    volumes:
+      - ./src:/app/src           # Mount source code for hot reload
+      - ./data:/app/data         # Mount data folder
+    environment:
+      PYTHONUNBUFFERED: 1
