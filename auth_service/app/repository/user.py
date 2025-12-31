@@ -1,10 +1,10 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing import Optional
 
-from db.client import get_user_collection
+from app.db.client import get_user_collection
 
-from schema.user import UserInDB
-from schema.object_id import PyObjectId
+from app.schema.user import UserInDB
+from app.schema.object_id import PyObjectId
 
 
 class UserRepository:
@@ -16,10 +16,9 @@ class UserRepository:
         user_dict = user.model_dump(by_alias = True, exclude_none = True)
         result = await self.collection.insert_one(user_dict) 
         user.id = result.inserted_id
-
         return user 
 
-    async def find(self, email : str = None,id: PyObjectId = None) -> Optional[UserInDB]:
+    async def find(self, email : str = None, id: PyObjectId = None) -> Optional[UserInDB]:
         query = {}
         if email:
             query["email"] = email 
