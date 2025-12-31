@@ -13,14 +13,17 @@ class AirportService:
         self._repository = repository
         self._logger = get_logger(__name__)
 
-    def find_by_code(self, code: str) -> AirportResponse:
+    def find_by_code(self, code: str, mask_details : bool = True) -> AirportResponse | Airport:
         self._logger.info(f"Searching airport with code {code}")
-        airport = self._repository.find_by_code(code)
+        airport = self._repository.find_by_code(code, mask_details = mask_details)
         if airport is None:
             self._logger.warning(f"Requested code : {code} not found.")
             raise ResourceNotFoundException(f"The requested airline with IATA/ICAO: {code} is not found.")
         self._logger.info(f"Found airport with IATA/ICAO: {airport.name}")
-        return map_airport_to_response(airport)
+        if mask_details:
+            return map_airport_to_response(airport)
+        else:
+            return airport
 
     def find_by_query(self,
                       q : str,
@@ -62,7 +65,12 @@ class AirportService:
             self._logger.warning("Unable to create airport")
         return airport_db
 
-    def delete_airport(self, code : str) -> None:
+    def delete_airport(self, code : int) -> None:
         self._logger.info(f"Deleting airport with code {code}")
-        self._repository.delete(code)
+        self._repository.update_status(code, False)
         self._logger.info(f"Deleted airport with code: {code}")
+
+    def activate_airport(self, code : int) -> None:
+        self._logger.info(f"Activating airport with code {code}")
+        self._repository.update_status(code, True)
+        self._logger.info(f"Activated airport with code: {code}")

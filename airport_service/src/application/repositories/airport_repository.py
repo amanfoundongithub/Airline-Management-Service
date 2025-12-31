@@ -16,7 +16,8 @@ class AirportRepository(ABC):
 
     @abstractmethod
     def find_by_code(self,
-                     code : str) -> Airport:
+                     code : str,
+                     mask_details : bool = False) -> Airport:
         pass
 
     @abstractmethod
@@ -35,5 +36,5 @@ class AirportRepository(ABC):
         pass
 
     @abstractmethod
-    def delete(self, code : str) -> None:
+    def update_status(self, id : int, status : bool) -> None:
         pass
