@@ -53,13 +53,21 @@ class SQLite3AirportRepository(AirportRepository):
             a.airport_id = executor.lastrowid
             return a
 
-    def find_by_code(self, code : str) -> Airport:
+    def find_by_code(self, code : str, mask_details : bool = False) -> Airport:
         with get_connection() as cursor:
-            row = cursor.execute("""
-                                 SELECT *
-                                 FROM airports
-                                 WHERE active=1 AND (iata = ? OR icao = ?)
-                                 """, (code.upper(), code.upper())).fetchone()
+            if mask_details:
+                query = """
+                SELECT *
+                FROM airports
+                WHERE active=1 AND (iata = ? OR icao = ?)
+                """
+            else:
+                query = """
+                SELECT *
+                FROM airports
+                WHERE iata = ? OR icao = ?
+                """
+            row = cursor.execute(query, (code.upper(), code.upper())).fetchone()
             return self._row_to_airport(row)
 
     def find_by_params(self,
@@ -105,11 +113,12 @@ class SQLite3AirportRepository(AirportRepository):
             rows = cursor.execute(query, params).fetchall()
             return [self._row_to_airport(row) for row in rows]
 
-    def delete(self, code : str) -> None:
+    def update_status(self, id : int, status : bool) -> None:
+        status_int = 1 if status else 0
         with get_connection() as cursor:
             cursor.execute("""
-            UPDATE airports SET active = ? WHERE iata = ? OR icao = ?""",
-                           (0, code, code))
+            UPDATE airports SET active = ? WHERE airport_id=?""",
+                           (status_int, id))
 
 
     def _row_to_airport(self, row) -> Airport:
@@ -126,5 +135,6 @@ class SQLite3AirportRepository(AirportRepository):
             latitude=row["latitude"],
             longitude=row["longitude"],
             altitude_ft=row["altitude_ft"],
-            timezone=row["timezone"]
+            timezone=row["timezone"],
+            active = row["active"] == 1
         )
