@@ -15,6 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Create .env
+        working-directory: airport_service
         run: cp .env.example .env
 
       - name: Set up Python
