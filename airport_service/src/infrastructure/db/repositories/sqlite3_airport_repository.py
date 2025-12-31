@@ -58,7 +58,7 @@ class SQLite3AirportRepository(AirportRepository):
             row = cursor.execute("""
                                  SELECT *
                                  FROM airports
-                                 WHERE iata = ? OR icao = ?
+                                 WHERE active=1 AND (iata = ? OR icao = ?)
                                  """, (code.upper(), code.upper())).fetchone()
             return self._row_to_airport(row)
 
@@ -69,7 +69,7 @@ class SQLite3AirportRepository(AirportRepository):
                        offset : int = 0) -> List[Airport]:
         with get_connection() as cursor:
             query = """
-            SELECT * FROM airports WHERE 1=1"""
+            SELECT * FROM airports WHERE active=1"""
             params = []
             if city:
                 query += f""" AND city = ? COLLATE NOCASE """
@@ -92,16 +92,24 @@ class SQLite3AirportRepository(AirportRepository):
             query = """
                 SELECT *
                 FROM airports
-                WHERE
+                WHERE active = 1
+                AND (
                     LOWER(name) LIKE LOWER(?)
-                OR  LOWER(city) LIKE LOWER(?)
-                OR  iata LIKE ?
-                OR  icao LIKE ?
+                    OR LOWER(city) LIKE LOWER(?)
+                    OR iata LIKE ?
+                    OR icao LIKE ?
+                    )
                 LIMIT ? OFFSET ?"""
             search = f"%{q}%"
             params = [search, search, search, search, limit, offset]
             rows = cursor.execute(query, params).fetchall()
             return [self._row_to_airport(row) for row in rows]
+
+    def delete(self, code : str) -> None:
+        with get_connection() as cursor:
+            cursor.execute("""
+            UPDATE airports SET active = ? WHERE iata = ? OR icao = ?""",
+                           (0, code, code))
 
 
     def _row_to_airport(self, row) -> Airport:

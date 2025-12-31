@@ -61,3 +61,8 @@ class AirportService:
         if airport_db.airport_id == 0:
             self._logger.warning("Unable to create airport")
         return airport_db
+
+    def delete_airport(self, code : str) -> None:
+        self._logger.info(f"Deleting airport with code {code}")
+        self._repository.delete(code)
+        self._logger.info(f"Deleted airport with code: {code}")
