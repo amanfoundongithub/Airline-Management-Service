@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 from datetime import datetime
 
-from app.schema.object_id import PyObjectId
-from app.core.enums.role import UserRole
+from schema.object_id import PyObjectId
+from core.enums.role import UserRole
 
 import re
 
