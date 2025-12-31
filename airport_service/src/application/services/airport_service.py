@@ -1,8 +1,10 @@
-from src.application.mapper.airport_mapper           import map_airport_to_response, map_airport_list_to_response, map_airport_to_validation
+from src.application.mapper.airport_mapper import map_airport_to_response, map_airport_list_to_response, \
+    map_airport_to_validation, map_airport_create_request_to_airport
 from src.application.repositories.airport_repository import AirportRepository
 from src.core.exceptions.http                        import ResourceNotFoundException
-from src.schemas.airport                             import AirportResponse, AirportSearchResponse, AirportCodeValidation
+from src.schemas.airport                             import AirportResponse, AirportSearchResponse, AirportCodeValidation, AirportCreateRequest
 from src.core.logging                                import get_logger
+from src.domain.airport                              import Airport
 
 
 class AirportService:
@@ -51,3 +53,11 @@ class AirportService:
             raise ResourceNotFoundException(f"The requested airline with code: {code} is not found.")
         self._logger.info(f"Found airport with code: {airport.name}")
         return map_airport_to_validation(airport, code)
+
+    def create_airport(self, airport : AirportCreateRequest) -> Airport:
+        self._logger.info(f"Creating airport with name: {airport.name} in city: {airport.city}, country: {airport.country}")
+        airport_db = map_airport_create_request_to_airport(airport)
+        airport_db = self._repository.save_one(airport_db)
+        if airport_db.airport_id == 0:
+            self._logger.warning("Unable to create airport")
+        return airport_db

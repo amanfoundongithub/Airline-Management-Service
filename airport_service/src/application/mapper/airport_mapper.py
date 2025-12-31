@@ -1,7 +1,8 @@
 from typing import List
 
 from src.domain.airport  import Airport
-from src.schemas.airport import AirportResponse, AirportCodeValidation
+from src.domain.codes    import IATACode, ICAOCode
+from src.schemas.airport import AirportResponse, AirportCodeValidation, AirportCreateRequest
 
 def map_airport_to_response(airport : Airport) -> AirportResponse:
     return AirportResponse(
@@ -30,4 +31,19 @@ def map_airport_to_validation(airport : Airport, code : str) -> AirportCodeValid
     return AirportCodeValidation(
         is_valid = True,
         code_type = _get_airport_code_type(airport, code),
+    )
+
+def map_airport_create_request_to_airport(req: AirportCreateRequest) -> Airport:
+    return Airport(
+        airport_id=0,
+        name=req.name,
+        city=req.city,
+        country=req.country,
+        iata=IATACode(req.iata) if req.iata else None,
+        icao=ICAOCode(req.icao) if req.icao else None,
+        latitude=req.latitude,
+        longitude=req.longitude,
+        altitude_ft=req.altitude_ft,
+        timezone=req.timezone,
+        active=True
     )

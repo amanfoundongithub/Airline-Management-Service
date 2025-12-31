@@ -18,3 +18,16 @@ class AirportSearchResponse(BaseModel):
 class AirportCodeValidation(BaseModel):
     is_valid : bool
     code_type : str = Literal["IATA", "ICAO"]
+
+class AirportCreateRequest(BaseModel):
+    name: str
+    city: str
+    country: str
+
+    iata: str
+    icao: str
+    timezone: str
+
+    latitude: float
+    longitude: float
+    altitude_ft: int

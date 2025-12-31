@@ -28,6 +28,31 @@ class SQLite3AirportRepository(AirportRepository):
                                ) for a in airports
                            ])
 
+    def save_one(self, a : Airport) -> Airport:
+        with get_connection() as cursor:
+            executor = cursor.cursor()
+            executor.execute(
+                """
+                INSERT INTO airports (name, city, country, iata, icao,
+                                      latitude, longitude, altitude_ft, timezone, active)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    a.name,
+                    a.city,
+                    a.country,
+                    a.iata.value if a.iata else None,
+                    a.icao.value if a.icao else None,
+                    a.latitude,
+                    a.longitude,
+                    a.altitude_ft,
+                    a.timezone,
+                    1 if a.active else 0
+                )
+            )
+            a.airport_id = executor.lastrowid
+            return a
+
     def find_by_code(self, code : str) -> Airport:
         with get_connection() as cursor:
             row = cursor.execute("""
