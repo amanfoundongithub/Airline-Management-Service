@@ -1,41 +1,48 @@
-name: SonarQube
+name: Airport Service CI
 
 on:
   push:
-    branches: [develop]
+    branches:
+      - develop
   pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   airport_service:
-    name: Sonar – Airport Service
+    name: Airport Service – Tests & SonarQube
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: airport_service
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Create .env
-        working-directory: airport_service
-        run: cp .env.example .env
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
-        working-directory: airport_service
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests with coverage
-        working-directory: airport_service
-        run: |
-          pytest --cov=src --cov-report=xml
+      - name: Create .env from example
+        run: cp .env.example .env
+
+      - name: Run tests
+        env:
+          SQLITE_DB_PATH: ":memory:"
+        run: pytest --cov=src --cov-report=xml
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: airport_service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_AIRPORT_TOKEN }}
