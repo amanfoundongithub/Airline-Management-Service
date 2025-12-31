@@ -11,7 +11,7 @@ from app.core.security  import create_jwt_token, get_current_user
 
 router = APIRouter(
     prefix = "/users",
-    tags = ["Authenticated"],
+    tags = ["User Self-Service"],
     deprecated = False,
     include_in_schema = True
 )

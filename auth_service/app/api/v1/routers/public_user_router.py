@@ -10,7 +10,7 @@ from app.core.security  import create_jwt_token
 
 router = APIRouter(
     prefix = "/auth",
-    tags = ["Public"],
+    tags = ["Public Authorization"],
     deprecated = False,
     include_in_schema = True
 )
