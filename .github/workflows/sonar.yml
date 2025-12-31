@@ -30,6 +30,14 @@ jobs:
       - name: Create .env from .env.example
         run: cp airport_service/src/.env.example airport_service/src/.env
 
+      - name: Run migrations
+        run: |
+          cd airport_service
+          for f in src/infrastructure/db/migrations/*.sql; do
+            sqlite3 "$SQLITE_DB_PATH" < "$f"
+          done
+
+
       - name: Run tests
         run: |
           cd airport_service
