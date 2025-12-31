@@ -11,6 +11,10 @@ class AirportRepository(ABC):
         pass
 
     @abstractmethod
+    def save_one(self, airport : Airport) -> Airport:
+        pass
+
+    @abstractmethod
     def find_by_code(self,
                      code : str) -> Airport:
         pass
