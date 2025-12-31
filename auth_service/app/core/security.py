@@ -1,5 +1,3 @@
-# Password helper
-import bcrypt
 
 # JWT helpers
 from datetime import datetime, timedelta, timezone
@@ -22,24 +20,6 @@ from app.repository.user import UserRepository, get_user_repository
 # ------------------- SECURITY SCHEME (SWAGGER) ---------------------------
 
 bearer_scheme = HTTPBearer(auto_error=False)
-
-# -------------------------------------------------------------------------
-
-
-# ------------------- PASSWORD ENCRYPTION HANDLERS ------------------------
-
-def hash_password(password: str) -> str:
-    password_bytes = password.encode("utf-8")
-    salt = bcrypt.gensalt(rounds=settings.security.password_hash_rounds)
-    hashed_bytes = bcrypt.hashpw(password_bytes, salt)
-    return hashed_bytes.decode("utf-8")
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(
-        plain_password.encode("utf-8"),
-        hashed_password.encode("utf-8"),
-    )
 
 # -------------------------------------------------------------------------
 

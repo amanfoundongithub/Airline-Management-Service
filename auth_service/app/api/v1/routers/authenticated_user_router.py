@@ -1,6 +1,7 @@
 from fastapi        import APIRouter, Depends, HTTPException, status
 
-from app.schema.user    import UserCreate, UserLogin, UserResponse
+from app.schema.object_id import PyObjectId
+from app.schema.user import UserCreate, UserLogin, UserResponse, UserUpdate, UserPasswordUpdate, UserUpdateStatus
 from app.schema.token   import Token
 from app.service.user   import UserService, get_user_service
 
@@ -30,3 +31,47 @@ async def get_current_active_user(
         current_user: UserResponse = Depends(get_current_user),
 ) -> UserResponse:
     return current_user
+
+
+
+@router.patch(
+    "/me",
+    summary =
+    """
+    Update user's profile
+    """,
+    description =
+    """
+    Update user's profile
+    """
+)
+async def update_current_active_user(
+    details: UserUpdate,
+    current_user: UserResponse = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service)
+) -> UserResponse:
+    user_id = PyObjectId(current_user.id)
+    return await user_service.update(user_id, details)
+
+
+
+@router.patch(
+    "/me/password",
+    summary =
+    """
+    Allows to update password
+    """,
+    description =
+    """
+    Update the password of an existing user
+    """
+)
+async def update_password_current_user(
+        request : UserPasswordUpdate,
+        current_user: UserResponse = Depends(get_current_user),
+        user_service: UserService = Depends(get_user_service)
+) -> UserUpdateStatus:
+    email = current_user.email
+    await user_service.update_password(str(email), request.old_password, request.new_password)
+    return UserUpdateStatus()
+

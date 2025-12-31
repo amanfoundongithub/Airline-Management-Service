@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 from datetime import datetime
 
@@ -63,6 +65,28 @@ class UserResponse(UserBase):
     model_config = ConfigDict(populate_by_name=True,
                               arbitrary_types_allowed=True)
 
+class UserUpdate(BaseModel):
+    name : str = Field(min_length = 2, max_length = 100)
+
+class UserPasswordUpdate(BaseModel):
+    old_password : str = Field(min_length = 8, max_length = 64)
+    new_password : str = Field(min_length = 8, max_length = 64)
+
+    @field_validator("new_password")
+    @classmethod
+    def check_password(cls, v : str) -> str:
+        if not re.search(r"\d", v):
+            raise ValueError("Password must contain a number")
+        if not re.search(r"[A-Z]", v):
+            raise ValueError("Password must contain a capital letter")
+        if not re.search(r"[a-z]", v):
+            raise ValueError("Password must contain a lowercase letter")
+        if not re.search(r"[A-Z]", v):
+            raise ValueError("Password must contain a uppercase letter")
+        return v
+
+class UserUpdateStatus(BaseModel):
+    status : Literal["SUCCESS", "FAILURE"] = Field(default = "SUCCESS")
 
 # --------------- CLASSES FOR MONGODB -------------
 class UserInDB(UserResponse):

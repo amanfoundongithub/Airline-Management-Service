@@ -1,10 +1,13 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing import Optional
+from pymongo import ReturnDocument
 
 from app.db.client import get_user_collection
 
-from app.schema.user import UserInDB
+from app.schema.user import UserInDB, UserUpdate
 from app.schema.object_id import PyObjectId
+
+from app.core.password import verify_password, hash_password
 
 
 class UserRepository:
@@ -16,7 +19,23 @@ class UserRepository:
         user_dict = user.model_dump(by_alias = True, exclude_none = True)
         result = await self.collection.insert_one(user_dict) 
         user.id = result.inserted_id
-        return user 
+        return user
+
+    async def update(self, id : PyObjectId, update : UserUpdate) -> UserInDB:
+        update_dict = update.model_dump(by_alias = True, exclude_none = True)
+        result = await self.collection.find_one_and_update({"_id": id}, {"$set": update_dict}, return_document = ReturnDocument.AFTER)
+        if result:
+            return UserInDB(**result)
+        return None
+
+    async def update_password(self, email : str, old_password : str, new_password : str) -> None:
+        result = await self.collection.find_one({"email": email})
+        if result is None:
+            return
+        if verify_password(old_password, result["hashed_password"]):
+            return
+        result["hashed_password"] = hash_password(new_password)
+        await self.collection.find_one_and_update({"email": email}, {"$set": result})
 
     async def find(self, email : str = None, id: PyObjectId = None) -> Optional[UserInDB]:
         query = {}
@@ -26,7 +45,7 @@ class UserRepository:
             query["_id"] = id 
         else:
             raise ValueError("At least one of the email or Id must be provided")
-        
+
         user_dict = await self.collection.find_one(query)
         if user_dict:
             return UserInDB(**user_dict)
