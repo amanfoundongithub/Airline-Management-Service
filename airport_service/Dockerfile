@@ -18,7 +18,7 @@ RUN pip install -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Expose port (matches your previous script)
+# Expose port
 EXPOSE 5300
 
 # Run Uvicorn directly
