@@ -2,19 +2,13 @@ name: Airport Service CI
 
 on:
   push:
-    branches:
-      - develop
+    branches: [develop]
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   airport_service:
-    name: Airport Service – Tests & SonarQube
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: airport_service
 
     steps:
       - name: Checkout repository
@@ -29,16 +23,18 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd airport_service
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create .env from example
-        run: cp .env.example .env
+      - name: Create .env from .env.example
+        run: cp airport_service/src/.env.example airport_service/src/.env
 
       - name: Run tests
-        env:
-          SQLITE_DB_PATH: ":memory:"
-        run: pytest --cov=src --cov-report=xml
+        run: |
+          cd airport_service
+          export SQLITE_DB_PATH=":memory:"
+          pytest --cov=src --cov-report=xml
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
