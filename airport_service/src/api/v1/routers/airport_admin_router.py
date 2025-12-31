@@ -40,3 +40,26 @@ async def create_airport_route(
         service : AirportService = Depends(get_airport_service)
 ) -> Airport:
     return service.create_airport(request)
+
+
+
+
+@router.delete(
+    "/delete",
+    summary =
+    """
+    Soft deletes an airport
+    """,
+    description =
+    """
+    Use this route to delete an airport by rendering it inactive, so that
+    it does not delete all the API endpoints that depends on it.
+    """
+)
+async def delete_airport_route(
+        code : str = Query(..., description="Code of the airport"),
+        user_id : str = Depends(try_admin_login),
+        service : AirportService = Depends(get_airport_service)
+) -> str:
+    service.delete_airport(code)
+    return "Success"

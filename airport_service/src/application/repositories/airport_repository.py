@@ -33,3 +33,7 @@ class AirportRepository(ABC):
                       limit : int = 50,
                       offset : int = 0) -> List[Airport]:
         pass
+
+    @abstractmethod
+    def delete(self, code : str) -> None:
+        pass
