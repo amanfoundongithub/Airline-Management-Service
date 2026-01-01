@@ -1,4 +1,4 @@
-import { Colors } from "./constants.js";
+import { Colors } from "./logger.colors";
 
 export class Logger {
     name: string;
