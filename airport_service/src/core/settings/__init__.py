@@ -1,3 +1,4 @@
+from src.core.settings.security import SecuritySettings
 from src.core.settings.service import ServiceSettings
 from src.core.settings.runtime import RuntimeSettings
 from src.core.settings.database import DatabaseSettings
@@ -8,3 +9,4 @@ service_settings = ServiceSettings()
 runtime_settings = RuntimeSettings()
 openflights_settings = OpenFlightsSettings()
 database_settings = DatabaseSettings()
+security_settings = SecuritySettings()
