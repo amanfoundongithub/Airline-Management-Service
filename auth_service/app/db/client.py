@@ -1,10 +1,9 @@
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
-
-from config.settings import settings
+from app.config.settings import settings
 
 # Global variables to hold the database client and the database object
-client: Optional[AsyncIOMotorClient] = None
+client: Optional[AsyncIOMotorClient]     = None
 database: Optional[AsyncIOMotorDatabase] = None
 
 
@@ -12,11 +11,11 @@ database: Optional[AsyncIOMotorDatabase] = None
 async def connect_with_mongo():
     global client, database
 
-    try: 
+    try:
         client = AsyncIOMotorClient(
-            settings.mongo.uri, 
-            serverSelectionTimeoutMS = 5000,
-            uuidRepresentation = "standard"
+            settings.mongo.uri,
+            serverSelectionTimeoutMS=5000,
+            uuidRepresentation="standard"
         )
         await client.admin.command("ping")
 
@@ -26,17 +25,18 @@ async def connect_with_mongo():
 
     except Exception as e:
         print(f"[ERROR] Unable to connect to MongoDB: {e}")
-        raise 
+        raise
+
 
 async def disconnect_with_mongo():
-    global client 
+    global client
 
     if client:
-        client.close()
+        await client.close()
         print(f"[INFO] Closing connection with {settings.mongo.db_name}")
 
 
 def get_user_collection() -> AsyncIOMotorCollection:
     if database is None:
-        raise ConnectionError(f"[ERROR] Connect to MongoDB before getting collection.")
+        raise ConnectionError("[ERROR] Connect to MongoDB before getting collection.")
     return database[settings.mongo.user_collection_name]

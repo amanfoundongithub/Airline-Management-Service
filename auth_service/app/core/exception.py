@@ -1,8 +1,7 @@
 
 #--------- user class exceptions ----------------
-
 class UserAlreadyExistsException(Exception):
     pass 
 
-class UserAuthorizationException(Exception):
+class UserAuthenticationException(Exception):
     pass 
