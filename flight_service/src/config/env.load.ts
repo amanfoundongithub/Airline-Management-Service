@@ -25,3 +25,5 @@ export const env = {
     MONGO_DB_NAME : load_from_env("MONGO_DB_NAME"),
     MONGO_COLLECTION_NAME : load_from_env("MONGO_COLLECTION_NAME"),
 }
+
+export const AUTH_MICROSERVICE_VERIFICATION_URL = ""

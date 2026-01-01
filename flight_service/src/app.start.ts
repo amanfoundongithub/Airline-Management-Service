@@ -1,7 +1,7 @@
 import { app } from "./app.config";
 import { Logger } from "./common/logger";
 import { connectWithMongoDB } from "./config/mongo.connection"
-import { env } from "./config/env";
+import { env } from "./config/env.load";
 
 // App Logger
 const APP_LOGGER = new Logger("APPLICATION")

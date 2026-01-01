@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { env } from './env';
+import { env } from './env.load';
 import { Logger } from "../common/logger";
 
 const MONGO_LOGGER = new Logger("MONGO_CONNECTION")
