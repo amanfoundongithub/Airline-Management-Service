@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextFunction, Request, Response } from "express";
-import { AUTH_MICROSERVICE_VERIFICATION_URL } from "../config/constants";
+import { AUTH_MICROSERVICE_VERIFICATION_URL } from "../config/env";
 import { Logger } from "../common/logger";
 
 const AUTHORIZATION_LOGGER = new Logger("AUTHORIZATION")
