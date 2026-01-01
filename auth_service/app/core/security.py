@@ -1,4 +1,3 @@
-
 # JWT helpers
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
@@ -12,15 +11,11 @@ from typing import Dict, Any, Optional
 from app.config.settings import settings
 
 from app.schema.token import TokenData
-from app.schema.user import UserResponse
-from app.schema.object_id import PyObjectId
 from app.repository.user import UserRepository, get_user_repository
 
 
 # ------------------- SECURITY SCHEME (SWAGGER) ---------------------------
-
 bearer_scheme = HTTPBearer(auto_error=False)
-
 # -------------------------------------------------------------------------
 
 
@@ -30,7 +25,7 @@ def create_jwt_token(
     data: Dict[str, Any],
     expires_delta: Optional[timedelta] = None,
 ):
-    payload = {"sub": data}
+    payload = data.copy()
 
     expire = (
         datetime.now(timezone.utc) + expires_delta
@@ -56,13 +51,14 @@ def decode_jwt_token(token: str) -> Optional[TokenData]:
             algorithms=[settings.security.jwt_algorithm],
         )
 
-        sub = payload.get("sub")
+        sub = payload.get("email")
         if sub is None:
             return None
 
-        return TokenData(sub=sub)
+        return TokenData(sub = payload)
 
-    except JWTError:
+    except JWTError as e:
+        print(e)
         return None
 
 # -------------------------------------------------------------------------
@@ -73,7 +69,7 @@ def decode_jwt_token(token: str) -> Optional[TokenData]:
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     user_repository: UserRepository = Depends(get_user_repository),
-) -> UserResponse:
+) -> TokenData:
 
     if credentials is None:
         raise HTTPException(
@@ -92,15 +88,15 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user_id = PyObjectId(token_data.sub)
-    current_user = await user_repository.find(id=user_id)
+    email = token_data.sub["email"]
+    current_user = await user_repository.find(email = email)
 
     if current_user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User does not exist",
         )
-
-    return UserResponse(**current_user.model_dump())
+    token_data.sub["id"] = str(current_user.id)
+    return token_data
 
 # -------------------------------------------------------------------------

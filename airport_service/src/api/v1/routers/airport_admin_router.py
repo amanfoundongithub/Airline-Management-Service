@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.params import Query
 
 # Local imports from the project
-from src.api.dependencies import get_airport_service, try_admin_login
+from src.api.dependencies import get_airport_service, check_access_permission
 from src.application.services.airport_service import AirportService
 from src.domain.airport import Airport
 from src.schemas.airport import AirportCreateRequest
@@ -39,10 +39,10 @@ router = APIRouter(prefix="/airport",
 )
 async def get_airport_route(
         code : str = Query(..., description="IATA/ICAO code"),
-        user_id: str = Depends(try_admin_login),
+        user_id: str = Depends(check_access_permission("airport.view")),
         service: AirportService = Depends(get_airport_service)
 ) -> Airport:
-    LOGGER.info(f"GET /airport/{code} received")
+    LOGGER.info(f"GET /airport/{code} received from {user_id}")
     return service.find_by_code(code, mask_details = False)
 
 
@@ -61,7 +61,7 @@ async def get_airport_route(
 )
 async def create_airport_route(
         request: AirportCreateRequest,
-        user_id: str = Depends(try_admin_login),
+        user_id: str = Depends(check_access_permission("airport.create")),
         service: AirportService = Depends(get_airport_service)
 ) -> Airport:
     LOGGER.info(f"POST /airport/{request.code} received")
@@ -82,7 +82,7 @@ async def create_airport_route(
 )
 async def delete_airport_route(
         id: int,
-        user_id: str = Depends(try_admin_login),
+        user_id: str = Depends(check_access_permission("airport.update")),
         service: AirportService = Depends(get_airport_service)
 ) -> SuccessMessage:
     LOGGER.info(f"DELETE /airport/{id} received")
@@ -102,7 +102,7 @@ async def delete_airport_route(
 )
 async def activate_airport_route(
         id: int,
-        user_id: str = Depends(try_admin_login),
+        user_id: str = Depends(check_access_permission("airport.update")),
         service: AirportService = Depends(get_airport_service)
 ) -> SuccessMessage:
     LOGGER.info(f"PATCH /airport/{id} received")
