@@ -18,9 +18,7 @@ from app.repository.user import UserRepository, get_user_repository
 
 
 # ------------------- SECURITY SCHEME (SWAGGER) ---------------------------
-
 bearer_scheme = HTTPBearer(auto_error=False)
-
 # -------------------------------------------------------------------------
 
 

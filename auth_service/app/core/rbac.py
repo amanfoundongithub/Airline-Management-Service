@@ -59,3 +59,6 @@ ROLE_PERMISSIONS: dict[UserRole, set[Permission]] = {
         Permission.SYSTEM_ACCESS,
     },
 }
+
+def get_user_permissions(role : UserRole) -> set[Permission]:
+    return ROLE_PERMISSIONS[role]
