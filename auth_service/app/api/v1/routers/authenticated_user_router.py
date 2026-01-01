@@ -1,8 +1,9 @@
 from fastapi        import APIRouter, Depends, HTTPException, status
+from typing import Any, Dict
 
 from app.schema.object_id import PyObjectId
 from app.schema.user import UserCreate, UserLogin, UserResponse, UserUpdate, UserPasswordUpdate, UserUpdateStatus
-from app.schema.token   import Token
+from app.schema.token   import Token, TokenData
 from app.service.user   import UserService, get_user_service
 
 from app.core.exception import UserAlreadyExistsException, UserAuthenticationException
@@ -28,8 +29,8 @@ router = APIRouter(
     """
 )
 async def get_current_active_user(
-        current_user: UserResponse = Depends(get_current_user),
-) -> UserResponse:
+        current_user: TokenData = Depends(get_current_user),
+) -> TokenData:
     return current_user
 
 
@@ -47,10 +48,10 @@ async def get_current_active_user(
 )
 async def update_current_active_user(
     details: UserUpdate,
-    current_user: UserResponse = Depends(get_current_user),
+    current_user: TokenData = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service)
 ) -> UserResponse:
-    user_id = PyObjectId(current_user.id)
+    user_id = PyObjectId(current_user.sub["id"])
     return await user_service.update(user_id, details)
 
 
@@ -68,10 +69,10 @@ async def update_current_active_user(
 )
 async def update_password_current_user(
         request : UserPasswordUpdate,
-        current_user: UserResponse = Depends(get_current_user),
+        current_user: TokenData = Depends(get_current_user),
         user_service: UserService = Depends(get_user_service)
 ) -> UserUpdateStatus:
-    email = current_user.email
+    email = current_user.sub["email"]
     await user_service.update_password(str(email), request.old_password, request.new_password)
     return UserUpdateStatus()
 

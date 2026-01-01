@@ -59,8 +59,8 @@ async def login_route(
         permissions = list(get_user_permissions(data.role))
         sub = {
             "permissions" : permissions,
-            "role" : data.role,
-            "name" : data.name
+            "name" : data.name,
+            "email" : data.email
         }
 
         return Token(
