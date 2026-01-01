@@ -96,7 +96,7 @@ async def get_current_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User does not exist",
         )
-    token_data.sub["id"] = current_user.id
+    token_data.sub["id"] = str(current_user.id)
     return token_data
 
 # -------------------------------------------------------------------------
