@@ -15,7 +15,7 @@ export const FlightSchema = new Schema({
         unique: true,
         trim: true,
         uppercase: true,
-        match: [/^[A-Z]{2}\d{2,8}$/, 'Flight number format must be like AA1234.']
+        match: [/^[A-Z]{2}\d{3,4}$/, 'Flight number format must be like AA1234.']
     },
 
     passenger_capacity: {
