@@ -1,5 +1,4 @@
-import { settings } from "../config/settings.js";
-import { Colors } from "./constants.js";
+import { Colors } from "./logger.colors";
 
 export class Logger {
     name: string;
@@ -7,7 +6,7 @@ export class Logger {
 
     constructor(name: string) {
         this.name = name;
-        this.debugMode = settings.DEBUG_MODE;
+        this.debugMode = true;
     }
 
     info = (message: any) => {

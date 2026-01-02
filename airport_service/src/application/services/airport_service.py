@@ -74,3 +74,9 @@ class AirportService:
         self._logger.info(f"Activating airport with code {code}")
         self._repository.update_status(code, True)
         self._logger.info(f"Activated airport with code: {code}")
+
+    def find_by_id(self, id : int) -> Airport:
+        self._logger.info(f"Finding airport with ID {id}")
+        airport = self._repository.find_by_id(id)
+        self._logger.info(f"Found airport with ID: {id}")
+        return airport

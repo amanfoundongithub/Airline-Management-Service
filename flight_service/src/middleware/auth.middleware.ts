@@ -1,95 +1,69 @@
-import axios from "axios";
-import { NextFunction, Request, Response } from "express";
-import { AUTH_MICROSERVICE_VERIFICATION_URL } from "../config/constants";
-import { Logger } from "../common/logger";
+import {env} from "../config/env.load";
+import {NextFunction, Request, Response} from "express";
+import jwt from "jsonwebtoken";
+import {Logger} from "../logger/logger";
 
-const AUTHORIZATION_LOGGER = new Logger("AUTHORIZATION")
 
-const getAuthenticationDetails = async (token : string) => {
-    const response = await axios.get(AUTH_MICROSERVICE_VERIFICATION_URL, {
-        headers : {
-            "Authorization" : `Bearer ${token}`
-        }
-    });
-    return response.data;
+const AUTH_MIDDLEWARE_LOGGER = new Logger("AUTH")
+
+interface JwtPayload {
+    name: string;
+    email: string;
+    permissions: string[];
+    exp: number;
 }
 
-export const validateAuthenticationTokenMiddleware = async (req : Request, res : Response, next : NextFunction) => {
-    
-    const authHeader = req.headers.authorization;
-    if(!authHeader) {
+const JWT_SECRET = env.JWT_SECRET
+
+interface AuthenticatedRequest extends Request {
+    user? : JwtPayload;
+}
+
+export const authenticate = (req : AuthenticatedRequest, res : Response, next : NextFunction) => {
+    const authHeader = req.headers.authorization
+    if (!authHeader?.startsWith("Bearer ")) {
         return res.status(401).json({
-            error : "No Authorization Header provided"
-        })
+            error : {
+                code : 'MISSING_AUTH_HEADER',
+                details : "Authorization header missing"
+            }}
+        )
     }
-
-    const token = authHeader.split(' ')[1];
-
+    const token = authHeader.split(" ")[1];
     try {
-        const userData = await getAuthenticationDetails(token);
-        (req as any).userData = userData
+        req.user = jwt.verify(token, JWT_SECRET) as JwtPayload
         next()
-
-    } catch(e : any) {
-        AUTHORIZATION_LOGGER.error(`Error in receiving authorization response: ${e}`)
-
-        const status = e.response?.status || 500;
-        const message = e.response?.data?.message || "Internal Auth Error";
-        
-        return res.status(status).json({ 
-            error: message 
-        });
-
-
+    } catch (err) {
+        AUTH_MIDDLEWARE_LOGGER.warn(`Cannot verify: ${err}`)
+        return res.status(401).json({
+                error : {
+                    code : 'INVALID_TOKEN',
+                    details : "Invalid/expired token"
+                }}
+            )
     }
 }
 
-export const validateAdminAuthorizationMiddleware = async (req : Request, res : Response, next : NextFunction) => {
-
-    try {
-        const userData = (req as any).userData 
-
-        if(userData["role"] === "admin") {
-            next()
-        } else {
+export const authorize = (required : string[]) => {
+    return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        const permissions = req.user?.permissions;
+        if (!permissions) {
             return res.status(403).json({
-                error : "This operation is reserved for only people with `admin` privileges. Please check with administrator\
-                for more information."
+                error : {
+                    code : 'MISSING_PERMISSIONS',
+                    details : "Permissions not found for user"
+                }
             })
         }
-    } catch(e : any) {
-        AUTHORIZATION_LOGGER.error(`Error in receiving authorization response: ${e}`)
-
-        const status = e.response?.status || 500;
-
-        return res.status(status).json({
-            error : "Internal error during authorization. Check again after some time!"
-        })
-
-    }
-}
-
-export const validateStaffAuthorizationMiddleware = async (req : Request, res : Response, next : NextFunction) => {
-
-    try {
-        const userData = (req as any).userData 
-
-        if(userData["role"] === "admin" || userData["role"] === "staff") {
-            next()
-        } else {
+        const allowed = required.every(p => permissions.includes(p))
+        if (!allowed) {
             return res.status(403).json({
-                error : "This operation is reserved for only people with `admin` or `staff` privileges. Please check with administrator\
-                for more information."
+                error : {
+                    code : 'FORBIDDEN',
+                    details : "You don't have the required permissions to use the resource"
+                }
             })
         }
-    } catch(e : any) {
-        AUTHORIZATION_LOGGER.error(`Error in receiving authorization response: ${e}`)
-
-        const status = e.response?.status || 500;
-
-        return res.status(status).json({
-            error : "Internal error during authorization. Check again after some time!"
-        })
-
-    }
+        next()
+  };
 }

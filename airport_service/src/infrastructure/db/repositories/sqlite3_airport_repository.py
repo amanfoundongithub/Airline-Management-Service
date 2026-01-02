@@ -70,6 +70,15 @@ class SQLite3AirportRepository(AirportRepository):
             row = cursor.execute(query, (code.upper(), code.upper())).fetchone()
             return self._row_to_airport(row)
 
+    def find_by_id(self, id : int) -> Airport:
+        with get_connection() as cursor:
+            query = """
+            SELECT *
+            FROM airports
+                WHERE airport_id=?"""
+            row = cursor.execute(query, (id,)).fetchone()
+            return self._row_to_airport(row)
+
     def find_by_params(self,
                        city : str,
                        country : str,

@@ -47,7 +47,7 @@ class UserLogin(BaseModel):
 
 class UserResponse(UserBase):
 
-    id : PyObjectId = Field(alias = "_id", default_factory = PyObjectId)
+    id : str = Field(alias = "_id")
 
     is_active:   bool = True
     is_verified: bool = False

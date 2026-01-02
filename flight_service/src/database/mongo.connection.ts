@@ -1,33 +1,23 @@
 import mongoose from "mongoose";
-import { settings } from './settings';
-import { Logger } from "../common/logger";
+import { env } from '../config/env.load';
+import { Logger } from "../logger/logger";
 
-// Get logger
 const MONGO_LOGGER = new Logger("MONGO_CONNECTION")
 
-/**
- * Utility function to establish connection with MongoDB
- * 
- * @author amanfoundongithub
- */
 export const connectWithMongoDB = async () => {
     try {
-        await mongoose.connect(settings.mongo.MONGO_URL, 
+        await mongoose.connect(env.MONGO_URI,
         {
-            dbName : settings.mongo.MONGO_DB
+            dbName : env.MONGO_DB_NAME
         })
         MONGO_LOGGER.info("MongoDB Connection Successful!");
     } catch(error) {
         MONGO_LOGGER.error("Could not connect to MongoDB:" + error);
+        throw error;
     }
 }
 
-/**
- * Utility function to establish disconnection with MongoDB
- * 
- * @author amanfoundongithub
- */
-export const disconnectWithMongoDB = async () => {
+const disconnectWithMongoDB = async () => {
     try {
         await mongoose.disconnect();
         MONGO_LOGGER.info("MongoDB Connection Disconnected!");
@@ -35,4 +25,9 @@ export const disconnectWithMongoDB = async () => {
         MONGO_LOGGER.error("Failed to close connection with MongoDB:" + error);
     }
 }
+
+process.on("SIGINT", async () => {
+    await disconnectWithMongoDB()
+    process.exit(0)
+})
 

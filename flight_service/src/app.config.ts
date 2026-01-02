@@ -1,37 +1,22 @@
 import { Application, Request, Response } from "express"
 import express from 'express';
-import { API_PREFIX, API_VERSION, APP_DESC, APP_NAME } from "./config/constants";
-import flightRouter from "./api/v1/flight.router";
+import { env } from "./config/env.load";
+import flightRouter from "./api/v1/routers/flight.crud.router";
 
-
-/**
- * Configures an Express application based on the routers and the 
- * middlewares for the entire application.
- * 
- * @author amanfoundongithub 
- */
 const configureApp = () => {
-
     const app : Application = express()
+    app.use(express.json())
 
-    // Parse JSON
-    app.use(express.json()) 
-
-    // Add a simple health checker
     app.get("/", (req : Request, res : Response) => {
         return res.status(200).json({
             "status" : "running",
-            "name" : APP_NAME,
-            "description" : APP_DESC,
-            "version" : API_VERSION
+            "name" : env.NAME,
+            "description" : env.DESC,
+            "version" : env.API_VERSION
         })
     })
 
-    /**
-     * Mapping the app with the respective controllers
-     */
-    app.use(API_PREFIX + "/flight", flightRouter);
-
+    app.use(env.API_PREFIX_FLIGHT, flightRouter);
     return app;
 }
 
