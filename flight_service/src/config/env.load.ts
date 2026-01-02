@@ -29,6 +29,8 @@ export const env = {
     MONGO_DB_NAME : load_from_env("MONGO_DB_NAME"),
     MONGO_COLLECTION_NAME : load_from_env("MONGO_COLLECTION_NAME"),
 
+    JWT_SECRET : load_from_env("JWT_SECRET"),
+
     // Client related configuration
     AUTH_USERNAME : load_from_env("AUTH_USERNAME"),
     AUTH_PASSWORD : load_from_env("AUTH_PASSWORD"),
