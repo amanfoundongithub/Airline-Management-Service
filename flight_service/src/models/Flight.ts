@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { FlightStatus } from "../common/constants.js";
+import { FlightStatus } from "../domain/enums/flight-status.enum";
 
 /**
  * Defines the interface for the Flight object that persist in MongoDB

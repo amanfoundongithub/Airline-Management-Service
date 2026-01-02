@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { FlightRepository } from "../repository/flight.repository.js";
 
-import { Logger } from "../common/logger.js";
+import { Logger } from "../logger/logger";
 
 // Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")

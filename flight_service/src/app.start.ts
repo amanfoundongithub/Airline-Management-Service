@@ -1,6 +1,6 @@
 import { app } from "./app.config";
-import { Logger } from "./common/logger";
-import { connectWithMongoDB } from "./config/mongo.connection"
+import { Logger } from "./logger/logger";
+import { connectWithMongoDB } from "./database/mongo.connection"
 import { env } from "./config/env.load";
 
 // App Logger

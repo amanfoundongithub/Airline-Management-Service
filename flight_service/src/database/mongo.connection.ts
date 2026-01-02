@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { env } from './env.load';
-import { Logger } from "../common/logger";
+import { env } from '../config/env.load';
+import { Logger } from "../logger/logger";
 
 const MONGO_LOGGER = new Logger("MONGO_CONNECTION")
 
@@ -13,10 +13,11 @@ export const connectWithMongoDB = async () => {
         MONGO_LOGGER.info("MongoDB Connection Successful!");
     } catch(error) {
         MONGO_LOGGER.error("Could not connect to MongoDB:" + error);
+        throw error;
     }
 }
 
-export const disconnectWithMongoDB = async () => {
+const disconnectWithMongoDB = async () => {
     try {
         await mongoose.disconnect();
         MONGO_LOGGER.info("MongoDB Connection Disconnected!");
@@ -24,4 +25,9 @@ export const disconnectWithMongoDB = async () => {
         MONGO_LOGGER.error("Failed to close connection with MongoDB:" + error);
     }
 }
+
+process.on("SIGINT", async () => {
+    await disconnectWithMongoDB()
+    process.exit(0)
+})
 
