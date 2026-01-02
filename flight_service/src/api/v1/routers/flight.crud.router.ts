@@ -3,13 +3,8 @@ import { FlightCrudController } from "../../../controller/flight.crud.controller
 import { validateFlightCreationRequestMiddleware } from "../../../middleware/flight.middleware";
 import {authenticate, authorize} from "../../../middleware/auth.middleware";
 
-
-
-
 const router = Router()
 const flightController = new FlightCrudController()
-
-
 
 router.post(
     '',
