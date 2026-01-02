@@ -3,11 +3,18 @@ import axios from "axios";
 import {getServiceToken} from "../../services/token.service";
 import {env} from "../../config/env.load";
 
-const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean => {
+export const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean => {
     if(!departure || !arrival) {
         throw new Error("Departure or arrival not provided");
     }
     return departure.getTime() < arrival.getTime()
+}
+
+export const checkDepartureAndArrivalAirportDifference = (departure : string, arrival : string) : boolean => {
+    if(!departure || !arrival) {
+        throw new Error("Departure or arrival airports not provided")
+    }
+    return departure.trim().toLowerCase() !== arrival.trim().toLowerCase()
 }
 
 export const checkAirportId =  async (airport_id : string) => {
