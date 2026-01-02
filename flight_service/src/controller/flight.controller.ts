@@ -1,19 +1,10 @@
 import { Request, Response } from "express";
 import { FlightRepository } from "../flight/flight.repository";
-
 import { Logger } from "../logger/logger";
-import {getServiceToken} from "../services/token.service";
 import {checkAirportId} from "../flight/flight.validator";
 
-// Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
 
-/**
- * Utility class to orchestrate the flight controller to the respective
- * routes and perform validations. 
- * 
- * @author amanfoundongithub
- */
 export class FlightController {
 
     flightRepository : FlightRepository;
@@ -23,25 +14,36 @@ export class FlightController {
     }
 
     create = async (req : Request, res : Response) => {
-        try {
-            FLIGHT_CONTROLLER_LOGGER.info("Received request for creating new airline")
-
-            const newFlight = await this.flightRepository.create(req.body);
-            return res.status(201).json({
-                message : "created",
-                details : newFlight
-            })
-            
-        } catch(e) {
-            FLIGHT_CONTROLLER_LOGGER.error("Error in creating flight:" + e);
-            return res.status(500).json({
-                error : "Internal Server Error",
-                details : e
-            })
-
-        } finally {
-            FLIGHT_CONTROLLER_LOGGER.info("Completed request for creating new airline")
-        }
+            FLIGHT_CONTROLLER_LOGGER.info(`Received  request for creating new airline ${req.body.aircraft_id}`)
+            this.flightRepository.create(req.body)
+                .then((dbEntity) => {
+                    return res.status(201).json({
+                        message : "SUCCESS",
+                        details : dbEntity
+                    })
+                })
+                .catch((err) => {
+                    FLIGHT_CONTROLLER_LOGGER.warn(`Error in creating flight : ${err}`)
+                    if(err.code === 11000) {
+                        return res.status(409).json({
+                            error : {
+                                code : "FLIGHT_ALREADY_EXISTS",
+                                details : `A flight with ID: ${req.body.aircraft_id} already exists! Try with a different id`
+                            }
+                        })
+                    }
+                    else {
+                        return res.status(500).json({
+                            error : {
+                                code : "INTERNAL_SERVER_ERROR",
+                                details : err
+                            }
+                        })
+                    }
+                })
+                .finally(() => {
+                    FLIGHT_CONTROLLER_LOGGER.info(`Completed request for creating new airline ${req.body.aircraft_id}`)
+                })
     }
 
     lookup = async (req : Request, res : Response) => {

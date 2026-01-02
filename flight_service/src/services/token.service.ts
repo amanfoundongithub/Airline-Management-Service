@@ -8,7 +8,6 @@ let tokenExpiry : number | null = null
 let tokenDuration : number = 300 * 100
 
 export const getServiceToken = async () => {
-    console.log(`here ${cachedToken} ${tokenDuration}`)
     const now = Date.now()
 
     if(cachedToken && tokenExpiry && now < tokenExpiry - tokenDuration) {

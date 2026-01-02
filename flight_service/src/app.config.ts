@@ -1,7 +1,7 @@
 import { Application, Request, Response } from "express"
 import express from 'express';
 import { env } from "./config/env.load";
-import flightRouter from "./api/v1/flight.router";
+import flightRouter from "./api/v1/routers/flight.router";
 
 const configureApp = () => {
     const app : Application = express()
