@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { FlightController } from "../../../controller/flight.controller";
-import { validateFlightCreationRequestMiddleware, validateFlightLookupRequestMiddleware } from "../../../middleware/flight.middleware";
+import { validateFlightCreationRequestMiddleware } from "../../../middleware/flight.middleware";
 
 
 
@@ -17,18 +17,8 @@ router.post(
 )
 
 router.get(
-    '/lookup',
-    validateFlightLookupRequestMiddleware,
-    flightController.lookup
+    '/:aircraft_id',
+    flightController.get_by_id
 )
 
-router.get(
-    '/search',
-    flightController.search
-)
-
-router.get(
-    '/timepass',
-    flightController.timepass
-)
 export default router;

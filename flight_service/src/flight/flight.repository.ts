@@ -8,6 +8,12 @@ export class FlightRepository {
         return await flight.save();
     }
 
+    findbyId = async (aircraft_id : string) => {
+        return FlightModel.findOne({
+            aircraft_id : aircraft_id
+        })
+    }
+
     findByNumber = async (flightNumber : string) => {
         return FlightModel.findOne({
             flight_number: flightNumber.toUpperCase()

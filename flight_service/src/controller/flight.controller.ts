@@ -46,6 +46,42 @@ export class FlightController {
                 })
     }
 
+    get_by_id = async (req : Request, res : Response) => {
+        const aircraft_id  = req.params.aircraft_id
+        FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to get information on aircraft_id=${aircraft_id}`)
+        this.flightRepository.findbyId(aircraft_id)
+            .then((aircraft) => {
+                if(aircraft) {
+                    return res.status(200).json({
+                        message : "SUCCESS",
+                        details : aircraft
+                    })
+                } else {
+                    return res.status(404).json({
+                        error : {
+                            code : 'FLIGHT_NOT_FOUND',
+                            details : `No aircraft with aircraft_id:${aircraft_id} is found. Try again!`
+                        }
+                    })
+                }
+
+            })
+            .catch((err) => {
+                FLIGHT_CONTROLLER_LOGGER.warn(`Error during finding of aircraft : ${err}`)
+                return res.status(500).json({
+                    error : {
+                        code : 'INTERNAL_SERVER_ERROR',
+                        details : err
+                    }
+                })
+            })
+            .finally(() => {
+                FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to get information on aircraft_id=${aircraft_id}`)
+            })
+    }
+
+
+
     lookup = async (req : Request, res : Response) => {
         const { flightNumber } = req.query;
         try {
