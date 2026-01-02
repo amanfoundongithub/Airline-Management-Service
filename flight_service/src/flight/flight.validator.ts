@@ -8,7 +8,8 @@ const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : string 
     if(!departure || !arrival) {
         throw new Error("Departure or arrival not provided");
     }
-    if(departure.getTime() >= arrival.getTime()) {
+
+    if(new Date(departure).getTime() >= new Date(arrival).getTime()) {
         return "Departure time cannot be more than or equal to arrival time."
     } else {
         return ""
