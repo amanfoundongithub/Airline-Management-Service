@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { FlightRepository } from "../flight/flight.repository";
 import { Logger } from "../logger/logger";
-import {checkAirportId} from "../flight/flight.validator";
 import {IFlight} from "../flight/flight.interface";
+import {FlightStatus} from "../flight/flight-status.enum";
 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
 
-export class FlightController {
+export class FlightCrudController {
 
     flightRepository : FlightRepository;
 
@@ -84,7 +84,7 @@ export class FlightController {
     update_schedule = async (req : Request, res : Response) => {
         const aircraft_id = req.params.aircraft_id
         FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to update schedules on aircraft_id=${aircraft_id}`)
-        this.flightRepository.update(aircraft_id, req.body as IFlight)
+        this.flightRepository.update(aircraft_id, req.body as Partial<IFlight>)
             .then((response) => {
                 res.status(200).json({
                     message : "SUCCESS",
@@ -104,84 +104,32 @@ export class FlightController {
                 FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to update schedules on aircraft_id=${aircraft_id}`)
 
             })
-
     }
 
-
-
-    lookup = async (req : Request, res : Response) => {
-        const { flightNumber } = req.query;
-        try {
-
-            FLIGHT_CONTROLLER_LOGGER.info(`Request for Info on Airline #${flightNumber} received.`);
-            const flightDetails = await this.flightRepository.findByNumber(String(flightNumber).toUpperCase());
-
-            if(!flightDetails) {
-                FLIGHT_CONTROLLER_LOGGER.info(`Airline #${flightNumber} not found.`)
-                return res.status(404).json({
-                    message: "The request airline could not be found."
-                })
-            } else {
-                FLIGHT_CONTROLLER_LOGGER.info(`Airline #${flightNumber} found.`)
-                return res.status(200).json({
-                    message : "FOUND",
-                    details : flightDetails
-                })
-            }
-
-        } catch(e) {
-            FLIGHT_CONTROLLER_LOGGER.error(`Error in findind details: ${e}`);
-            return res.status(500).json({
-                error : "Internal Server Error",
-                details : e
-            })
-        } finally {
-            FLIGHT_CONTROLLER_LOGGER.info(`Request for Info on Airline #${flightNumber} completed.`)
-        }
-    }
-
-    search = async (req : Request, res : Response) => {
-        try {
-            FLIGHT_CONTROLLER_LOGGER.info(`Request for Search on Airline received.`)
-
-            const filter : any = {};
-            Object.keys(req.query).forEach((key) => {
-                const value = req.query[key]
-
-                if(value) {
-                    filter[key] = {
-                        $regex : value,
-                        $options : "i"
-                    }
-                }
-            })
-
-            const listOfFlights = await this.flightRepository.findAll(filter);
-            return res.status(200).json({
-                "message" : "FOUND",
-                "results" : listOfFlights
-            })
-        } catch(e) {
-            FLIGHT_CONTROLLER_LOGGER.error(`Error in findingflights: ${e}`)
-            return res.status(500).json({
-                error : "Internal Server Error",
-                details : e
-            })
-        } finally {
-            FLIGHT_CONTROLLER_LOGGER.info(`Request for Search on Airline completed.`)
-        }
-    }
-
-    timepass = async (req : Request, res : Response) => {
-        const airport_id = "abcd"
-        checkAirportId(airport_id)
-            .then((valid) => {
-                return res.send({
-                    valid
+    delete_flight = async (req : Request, res : Response) => {
+        const aircraft_id = req.params.aircraft_id
+        FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to delete aircraft_id=${aircraft_id}`)
+        this.flightRepository.update(aircraft_id, {
+            "current_status" : FlightStatus.CANCELLED
+        } as Partial<IFlight>)
+            .then((response) => {
+                res.status(200).json({
+                    message : "SUCCESS",
+                    details : response
                 })
             })
             .catch((err) => {
-                console.log(err)
+                FLIGHT_CONTROLLER_LOGGER.warn(`Error during deletion of aircraft : ${err}`)
+                return res.status(500).json({
+                    error : {
+                        code : 'INTERNAL_SERVER_ERROR',
+                        details : err
+                    }
+                })
+            })
+            .finally(() => {
+                FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to delete aircraft_id=${aircraft_id}`)
+
             })
     }
 }

@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { FlightController } from "../../../controller/flight.controller";
+import { FlightCrudController } from "../../../controller/flight.crud.controller";
 import { validateFlightCreationRequestMiddleware } from "../../../middleware/flight.middleware";
 
 
 
 
 const router = Router()
-const flightController = new FlightController()
+const flightController = new FlightCrudController()
 
 
 
@@ -24,6 +24,11 @@ router.get(
 router.put(
     '/:aircraft_id',
     flightController.update_schedule
+)
+
+router.delete(
+    '/:aircraft_id',
+    flightController.delete_flight
 )
 
 export default router;
