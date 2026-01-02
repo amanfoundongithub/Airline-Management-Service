@@ -27,24 +27,35 @@ const checkDepartureAndArrivalAirportDifference = (departure : string, arrival :
     }
 }
 
-export const validateFlightDocument = (flight : IFlight) : string => {
-    return checkDepartureBeforeArrival(flight.departure_time, flight.arrival_time)
-    || checkDepartureAndArrivalAirportDifference(flight.departure_airport, flight.arrival_airport)
-
-}
-export const checkAirportId =  async (airport_id : string) => {
+export const checkAirportId =  (airport_id : string) => {
     const airportIdInteger = convertToNumber(airport_id)
-    const cachedToken = await getServiceToken()
-    if(cachedToken) {
+    let result = ""
+    getServiceToken().then(async (cachedToken) => {
+        if(cachedToken) {
         const response = await axios.get(`${env.AIRPORT_ID_DETAILS_URL}/${airportIdInteger}`, {
             headers : {
                 Authorization : `Bearer ${cachedToken}`
             },
             timeout : 2000
         })
-        return response.status === 200
+        if(response.status === 200) {
+            result = ""
+        } else {
+            result = `Invalid airport Id: ${airport_id}`
+        }
     } else {
         throw new Error("Unable to get token from auth_microservice")
     }
+    })
+        .catch((err) => {
+            console.log(err)
+        })
+    return result
 }
 
+export const validateFlightDocument = (flight : IFlight) : string => {
+    return checkDepartureBeforeArrival(flight.departure_time, flight.arrival_time)
+    || checkDepartureAndArrivalAirportDifference(flight.departure_airport, flight.arrival_airport)
+    || checkAirportId(flight.arrival_airport)
+    || checkAirportId(flight.departure_airport)
+}
