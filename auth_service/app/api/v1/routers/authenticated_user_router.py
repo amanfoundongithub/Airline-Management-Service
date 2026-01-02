@@ -51,7 +51,7 @@ async def update_current_active_user(
     current_user: TokenData = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service)
 ) -> UserResponse:
-    user_id = PyObjectId(current_user.sub["id"])
+    user_id = current_user.sub["id"]
     return await user_service.update(user_id, details)
 
 

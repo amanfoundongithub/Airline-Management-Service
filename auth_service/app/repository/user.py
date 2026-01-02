@@ -5,7 +5,6 @@ from pymongo import ReturnDocument
 from app.db.client import get_user_collection
 
 from app.schema.user import UserInDB, UserUpdate
-from app.schema.object_id import PyObjectId
 
 from app.core.password import verify_password, hash_password
 
@@ -17,11 +16,13 @@ class UserRepository:
     
     async def insert(self, user: UserInDB) -> UserInDB:
         user_dict = user.model_dump(by_alias = True, exclude_none = True)
-        result = await self.collection.insert_one(user_dict) 
-        user.id = result.inserted_id
-        return user
+        result = await self.collection.insert_one(user_dict)
+        # Fetch fresh document from DB
+        created = await self.collection.find_one({"_id": result.inserted_id})
 
-    async def update(self, id : PyObjectId, update : UserUpdate) -> UserInDB:
+        return UserInDB(**created)
+
+    async def update(self, id : str, update : UserUpdate) -> UserInDB:
         update_dict = update.model_dump(by_alias = True, exclude_none = True)
         result = await self.collection.find_one_and_update({"_id": id}, {"$set": update_dict}, return_document = ReturnDocument.AFTER)
         if result:
@@ -37,7 +38,7 @@ class UserRepository:
         result["hashed_password"] = hash_password(new_password)
         await self.collection.find_one_and_update({"email": email}, {"$set": result})
 
-    async def find(self, email : str = None, id: PyObjectId = None) -> Optional[UserInDB]:
+    async def find(self, email : str = None, id: str = None) -> Optional[UserInDB]:
         query = {}
         if email:
             query["email"] = email 

@@ -1,6 +1,5 @@
 from app.repository.user import get_user_repository, UserRepository
 from app.schema.user import UserResponse, UserCreate, UserLogin, UserInDB, UserUpdate
-from app.schema.object_id import PyObjectId
 from app.core.password   import hash_password, verify_password
 from app.core.exception import UserAlreadyExistsException, UserAuthenticationException
 from typing          import Optional
@@ -40,7 +39,7 @@ class UserService:
             **user_in_db.model_dump()
         )
 
-    async def update(self, id : PyObjectId, request : UserUpdate) -> UserResponse:
+    async def update(self, id : str, request : UserUpdate) -> UserResponse:
         return await self.repository.update(id, request)
 
     async def update_password(self, email : str, old_password : str, new_password : str) -> None:
