@@ -3,10 +3,10 @@ import { FlightCrudController } from "../../../controller/flight.crud.controller
 import { validateFlightCreationRequestMiddleware } from "../../../middleware/flight.middleware";
 import {authenticate, authorize} from "../../../middleware/auth.middleware";
 
-const router = Router()
+const crud_router = Router()
 const flightController = new FlightCrudController()
 
-router.post(
+crud_router.post(
     '',
     authenticate,
     authorize(["flight.create"]),
@@ -14,25 +14,25 @@ router.post(
     flightController.create
 )
 
-router.get(
+crud_router.get(
     '/:aircraft_id',
     authenticate,
     authorize(["flight.view"]),
     flightController.get_by_id
 )
 
-router.put(
+crud_router.put(
     '/:aircraft_id',
     authenticate,
     authorize(["flight.update"]),
     flightController.update_schedule
 )
 
-router.delete(
+crud_router.delete(
     '/:aircraft_id',
     authenticate,
     authorize(["flight.cancel"]),
     flightController.delete_flight
 )
 
-export default router;
+export default crud_router;
