@@ -33,6 +33,9 @@ export const env = {
     AUTH_USERNAME : load_from_env("AUTH_USERNAME"),
     AUTH_PASSWORD : load_from_env("AUTH_PASSWORD"),
     AUTH_URL : load_from_env("AUTH_URL"),
+
+    // Airport validation URL
+    AIRPORT_ID_DETAILS_URL : load_from_env("AIRPORT_ID_DETAILS_URL"),
 }
 
 export const AUTH_MICROSERVICE_VERIFICATION_URL = ""

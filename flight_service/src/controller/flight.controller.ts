@@ -3,6 +3,7 @@ import { FlightRepository } from "../repository/flight.repository.js";
 
 import { Logger } from "../logger/logger";
 import {getServiceToken} from "../services/token.service";
+import {checkAirportId} from "../domain/models/flight.validator";
 
 // Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
@@ -107,12 +108,15 @@ export class FlightController {
     }
 
     timepass = async (req : Request, res : Response) => {
-        getServiceToken().then((result) => {
-            return res.send({
-                "token" : result
+        const airport_id = "abcd"
+        checkAirportId(airport_id)
+            .then((valid) => {
+                return res.send({
+                    valid
+                })
             })
-        }).catch((err) => {
-            console.log(err)
-        })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 }
