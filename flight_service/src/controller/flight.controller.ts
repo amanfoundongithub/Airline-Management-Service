@@ -28,7 +28,7 @@ export class FlightController {
                         return res.status(409).json({
                             error : {
                                 code : "FLIGHT_ALREADY_EXISTS",
-                                details : `A flight with ID: ${req.body.aircraft_id} already exists! Try with a different id`
+                                details : `A flight with ID: ${req.body.aircraft_id} already exists! Please try with a different id or query this flight.`
                             }
                         })
                     }
