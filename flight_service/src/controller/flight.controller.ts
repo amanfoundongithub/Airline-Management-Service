@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { FlightRepository } from "../flight/flight.repository";
 import { Logger } from "../logger/logger";
 import {checkAirportId} from "../flight/flight.validator";
+import {IFlight} from "../flight/flight.interface";
 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
 
@@ -47,9 +48,9 @@ export class FlightController {
     }
 
     get_by_id = async (req : Request, res : Response) => {
-        const aircraft_id  = req.params.aircraft_id
+        const aircraft_id = req.params.aircraft_id
         FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to get information on aircraft_id=${aircraft_id}`)
-        this.flightRepository.findbyId(aircraft_id)
+        this.flightRepository.findById(aircraft_id)
             .then((aircraft) => {
                 if(aircraft) {
                     return res.status(200).json({
@@ -78,6 +79,32 @@ export class FlightController {
             .finally(() => {
                 FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to get information on aircraft_id=${aircraft_id}`)
             })
+    }
+
+    update_schedule = async (req : Request, res : Response) => {
+        const aircraft_id = req.params.aircraft_id
+        FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to update schedules on aircraft_id=${aircraft_id}`)
+        this.flightRepository.update(aircraft_id, req.body as IFlight)
+            .then((response) => {
+                res.status(200).json({
+                    message : "SUCCESS",
+                    details : response
+                })
+            })
+            .catch((err) => {
+                FLIGHT_CONTROLLER_LOGGER.warn(`Error during updating of aircraft : ${err}`)
+                return res.status(500).json({
+                    error : {
+                        code : 'INTERNAL_SERVER_ERROR',
+                        details : err
+                    }
+                })
+            })
+            .finally(() => {
+                FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to update schedules on aircraft_id=${aircraft_id}`)
+
+            })
+
     }
 
 

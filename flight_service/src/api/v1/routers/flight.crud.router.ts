@@ -21,4 +21,9 @@ router.get(
     flightController.get_by_id
 )
 
+router.put(
+    '/:aircraft_id',
+    flightController.update_schedule
+)
+
 export default router;

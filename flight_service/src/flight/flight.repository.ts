@@ -8,7 +8,7 @@ export class FlightRepository {
         return await flight.save();
     }
 
-    findbyId = async (aircraft_id : string) => {
+    findById = async (aircraft_id : string) => {
         return FlightModel.findOne({
             aircraft_id : aircraft_id
         })
@@ -26,10 +26,15 @@ export class FlightRepository {
         });
     }
 
-    update = async (id : string, updateData : Partial<IFlight>) => {
-        return FlightModel.findByIdAndUpdate(id, updateData, {
-            new: true
-        });
+    update = async (aircraft_id : string, updateData : Partial<IFlight>) => {
+        return FlightModel.findOneAndUpdate(
+            {
+                aircraft_id
+            },
+            updateData,
+            {
+                new : true
+            }
+        )
     }
-
 }
