@@ -1,7 +1,7 @@
-import {convertToNumber} from "../../helpers/number.helper";
+import {convertToNumber} from "../helpers/number.helper";
 import axios from "axios";
-import {getServiceToken} from "../../services/token.service";
-import {env} from "../../config/env.load";
+import {getServiceToken} from "../services/token.service";
+import {env} from "../config/env.load";
 
 export const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean => {
     if(!departure || !arrival) {

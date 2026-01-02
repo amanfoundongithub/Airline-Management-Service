@@ -3,7 +3,7 @@ import { FlightRepository } from "../repository/flight.repository.js";
 
 import { Logger } from "../logger/logger";
 import {getServiceToken} from "../services/token.service";
-import {checkAirportId} from "../domain/models/flight.validator";
+import {checkAirportId} from "../validators/flight.validator";
 
 // Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
