@@ -3,7 +3,20 @@ import {validateFlightDocument} from "../flight/flight.validator";
 import {IFlight} from "../flight/flight.interface";
 
 const findMissingFieldsInCreateRequest = (req : Request) => {
-    return []
+    const required_fields = [
+        "flight_number",
+        "departure_airport",
+        "arrival_airport",
+        "departure_time",
+        "arrival_time",
+        "passenger_capacity",
+        "aircraft_id"
+    ]
+
+    return required_fields.filter(field => {
+        const value = req.body[field]
+        return value === undefined || value === null || value === ""
+    })
 }
 export const validateFlightCreationRequestMiddleware = (req : Request, res : Response, next : NextFunction) => {
 
@@ -11,15 +24,21 @@ export const validateFlightCreationRequestMiddleware = (req : Request, res : Res
 
     if (missingFields.length > 0) {
         return res.status(400).json({
-            error: "Some fields are missing to create the required aircraft.",
-            missingFields
+            error : {
+                code : "MISSING_FIELDS",
+                details : "Some fields are missing from the request. Check the `missingFields` attribute for more details.",
+                missingFields
+            }
         });
     }
 
     const validationResults = validateFlightDocument(req.body as IFlight)
     if(validationResults.length > 0) {
         return res.status(400).json({
-            details : validationResults
+            error : {
+                code : "INVALID_REQUEST",
+                details : validationResults
+            }
         });
     }
 
