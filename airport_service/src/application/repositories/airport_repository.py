@@ -15,6 +15,10 @@ class AirportRepository(ABC):
         pass
 
     @abstractmethod
+    def find_by_id(self, id : int) -> Airport:
+        pass
+
+    @abstractmethod
     def find_by_code(self,
                      code : str,
                      mask_details : bool = False) -> Airport:

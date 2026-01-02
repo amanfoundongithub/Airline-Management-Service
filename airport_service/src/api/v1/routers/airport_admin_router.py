@@ -68,6 +68,22 @@ async def create_airport_route(
     return service.create_airport(request)
 
 
+@router.get(
+    "/{id}",
+    summary =
+    """
+    Fetches airport data based on ID
+    """
+)
+async def get_airport_by_id_route(
+        id: int,
+        user_id: str = Depends(check_access_permission("airport.view")),
+        service: AirportService = Depends(get_airport_service)
+) -> Airport:
+    LOGGER.info(f"GET /airport/{id} received")
+    return service.find_by_id(id)
+
+
 @router.delete(
     "/{id}/deactivate",
     summary=
