@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { findMissingFieldsInCreateRequest, validateArrivalBeforeDeparture } from "../common/flight.validation";
+import {validateFlightDocument} from "../flight/flight.validator";
+import {IFlight} from "../flight/flight.interface";
 
-
-/**
- * Middleware for flight creation request to ascertain the 
- * structure of the object and the sanctity.
- * 
- * @author amanfoundongithub
- */
+const findMissingFieldsInCreateRequest = (req : Request) => {
+    return []
+}
 export const validateFlightCreationRequestMiddleware = (req : Request, res : Response, next : NextFunction) => {
 
-    const missingFields = findMissingFieldsInCreateRequest(req) 
+    const missingFields = findMissingFieldsInCreateRequest(req)
 
     if (missingFields.length > 0) {
         return res.status(400).json({
@@ -19,9 +16,10 @@ export const validateFlightCreationRequestMiddleware = (req : Request, res : Res
         });
     }
 
-    if(!validateArrivalBeforeDeparture(req.body.arrival_time, req.body.departure_time)) {
+    const validationResults = validateFlightDocument(req.body as IFlight)
+    if(validationResults.length > 0) {
         return res.status(400).json({
-            error : "Arrival time must be before the departure time."
+            details : validationResults
         });
     }
 

@@ -2,21 +2,35 @@ import {convertToNumber} from "../helpers/number.helper";
 import axios from "axios";
 import {getServiceToken} from "../services/token.service";
 import {env} from "../config/env.load";
+import {IFlight} from "./flight.interface";
 
-export const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean => {
+const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : string => {
     if(!departure || !arrival) {
         throw new Error("Departure or arrival not provided");
     }
-    return departure.getTime() < arrival.getTime()
+    if(departure.getTime() >= arrival.getTime()) {
+        return "Departure time cannot be more than or equal to arrival time."
+    } else {
+        return ""
+    }
 }
 
-export const checkDepartureAndArrivalAirportDifference = (departure : string, arrival : string) : boolean => {
+const checkDepartureAndArrivalAirportDifference = (departure : string, arrival : string) : string => {
     if(!departure || !arrival) {
         throw new Error("Departure or arrival airports not provided")
     }
-    return departure.trim().toLowerCase() !== arrival.trim().toLowerCase()
+    if(convertToNumber(departure) === convertToNumber(arrival)) {
+        return "The departure and the arrival airport cannot be same."
+    } else {
+        return ""
+    }
 }
 
+export const validateFlightDocument = (flight : IFlight) : string => {
+    return checkDepartureBeforeArrival(flight.departure_time, flight.arrival_time)
+    || checkDepartureAndArrivalAirportDifference(flight.departure_airport, flight.arrival_airport)
+
+}
 export const checkAirportId =  async (airport_id : string) => {
     const airportIdInteger = convertToNumber(airport_id)
     const cachedToken = await getServiceToken()
