@@ -28,6 +28,11 @@ export const env = {
     MONGO_URI : load_from_env("MONGO_URI"),
     MONGO_DB_NAME : load_from_env("MONGO_DB_NAME"),
     MONGO_COLLECTION_NAME : load_from_env("MONGO_COLLECTION_NAME"),
+
+    // Client related configuration
+    AUTH_USERNAME : load_from_env("AUTH_USERNAME"),
+    AUTH_PASSWORD : load_from_env("AUTH_PASSWORD"),
+    AUTH_URL : load_from_env("AUTH_URL"),
 }
 
 export const AUTH_MICROSERVICE_VERIFICATION_URL = ""

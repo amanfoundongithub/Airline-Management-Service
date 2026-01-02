@@ -9,7 +9,7 @@ const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean
 }
 
 const checkAirportId = (airport_id : string) : boolean => {
-    // TODO: Implement the logic to get the airport id checked from the server
+
     return true
 }
 

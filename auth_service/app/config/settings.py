@@ -36,7 +36,7 @@ class SecuritySettings(BaseSettings):
 
     jwt_secret_key : str = Field(validation_alias = "JWT_SECRET_KEY")
     jwt_algorithm  : str = "HS256"
-    access_token_expiration_in_minutes : int = 30
+    access_token_expiration_in_minutes : int = 5
 
     password_hash_rounds : int = 12 
 

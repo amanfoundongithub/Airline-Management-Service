@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { FlightRepository } from "../repository/flight.repository.js";
 
 import { Logger } from "../logger/logger";
+import {getServiceToken} from "../services/token.service";
 
 // Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
@@ -103,5 +104,15 @@ export class FlightController {
         } finally {
             FLIGHT_CONTROLLER_LOGGER.info(`Request for Search on Airline completed.`)
         }
+    }
+
+    timepass = async (req : Request, res : Response) => {
+        getServiceToken().then((result) => {
+            return res.send({
+                "token" : result
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 }

@@ -30,4 +30,8 @@ router.get(
     flightController.search
 )
 
+router.get(
+    '/timepass',
+    flightController.timepass
+)
 export default router;
