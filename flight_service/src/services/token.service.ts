@@ -20,7 +20,7 @@ export const getServiceToken = async () => {
         password : env.AUTH_PASSWORD,
     })
 
-    const {access_token, token_type} = response.data
+    const {access_token} = response.data
     cachedToken = access_token
     tokenExpiry = getTokenExpiry(access_token)
     return cachedToken

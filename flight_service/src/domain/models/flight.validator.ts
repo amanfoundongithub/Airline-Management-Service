@@ -11,9 +11,10 @@ const checkDepartureBeforeArrival = (departure : Date, arrival : Date) : boolean
 }
 
 export const checkAirportId =  async (airport_id : string) => {
+    const airportIdInteger = convertToNumber(airport_id)
     const cachedToken = await getServiceToken()
     if(cachedToken) {
-        const response = await axios.get(`${env.AIRPORT_ID_DETAILS_URL}/${airport_id}`, {
+        const response = await axios.get(`${env.AIRPORT_ID_DETAILS_URL}/${airportIdInteger}`, {
             headers : {
                 Authorization : `Bearer ${cachedToken}`
             },
