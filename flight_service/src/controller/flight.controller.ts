@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { FlightRepository } from "../repository/flight.repository.js";
+import { FlightRepository } from "../flight/flight.repository";
 
 import { Logger } from "../logger/logger";
 import {getServiceToken} from "../services/token.service";
-import {checkAirportId} from "../validators/flight.validator";
+import {checkAirportId} from "../flight/flight.validator";
 
 // Get logger 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")

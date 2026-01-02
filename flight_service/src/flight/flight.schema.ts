@@ -1,5 +1,5 @@
 import {Schema} from "mongoose"
-import {FlightStatus} from "../enums/flight-status.enum";
+import {FlightStatus} from "./flight-status.enum";
 
 export const FlightSchema = new Schema({
     aircraft_id: {

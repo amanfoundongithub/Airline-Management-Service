@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { FlightStatus } from "../enums/flight-status.enum";
+import { FlightStatus } from "./flight-status.enum";
 
 export interface IFlight extends Document {
 
