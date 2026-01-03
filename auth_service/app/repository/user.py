@@ -43,11 +43,12 @@ class UserRepository:
         if email:
             query["email"] = email 
         elif id:
-            query["_id"] = id 
+            query["_id"] = str(id)
         else:
             raise ValueError("At least one of the email or Id must be provided")
 
         user_dict = await self.collection.find_one(query)
+        user_dict["_id"] = str(user_dict["_id"])
         if user_dict:
             return UserInDB(**user_dict)
         else: 
