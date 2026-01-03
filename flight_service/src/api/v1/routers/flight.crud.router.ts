@@ -21,6 +21,13 @@ crud_router.get(
     flightController.get_by_id
 )
 
+crud_router.get(
+    '',
+    authenticate,
+    authorize(["flight.view"]),
+    flightController.get_by_params
+)
+
 crud_router.put(
     '/:aircraft_id',
     authenticate,

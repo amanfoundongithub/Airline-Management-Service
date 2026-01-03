@@ -3,6 +3,7 @@ import { FlightRepository } from "../flight/flight.repository";
 import { Logger } from "../logger/logger";
 import {IFlight} from "../flight/flight.interface";
 import {FlightStatus} from "../flight/flight-status.enum";
+import {convertToNumber} from "../helpers/number.helper";
 
 const FLIGHT_CONTROLLER_LOGGER = new Logger("FLIGHT_CONTROLLER")
 
@@ -78,6 +79,45 @@ export class FlightCrudController {
             })
             .finally(() => {
                 FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to get information on aircraft_id=${aircraft_id}`)
+            })
+    }
+
+    get_by_params = async (req : Request, res : Response) => {
+        const filter : any = {}
+        const query = req.query
+
+        if(query.status) {
+            filter["status"] = query.status
+        }
+        if(query.departure_airport) {
+            filter["departure_airport"] = Number(query.departure_airport)
+        }
+        if(query.arrival_airport) {
+            filter["arrival_airport"] = Number(query.arrival_airport)
+        }
+
+        const limit = Number(query.limit) || 30
+        const offset = Number(query.offset) || 0
+
+        FLIGHT_CONTROLLER_LOGGER.info(`Received  Request to get information on filter=${filter}`)
+        this.flightRepository.findAll(filter)
+            .then((results) => {
+                return res.status(200).json({
+                    message : "SUCCESS",
+                    details : results
+                })
+            })
+            .catch((err) => {
+                FLIGHT_CONTROLLER_LOGGER.warn(`Error in completing request : ${err}`)
+                return res.status(500).json({
+                    error : {
+                        code : 'INTERNAL_SERVER_ERROR',
+                        details : err
+                    }
+                })
+            })
+            .finally(() => {
+                FLIGHT_CONTROLLER_LOGGER.info(`Completed Request to get information on filter=${filter}`)
             })
     }
 
